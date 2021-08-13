@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import { useSelector, useDispatch } from 'react-redux'
-import { setDocCallPage } from '../store/reducers/docParam'
+import { setDocCallPage } from '../store/reducers/docParam.reducer'
 
 export default function CallPage() {
   const router = useRouter()
@@ -13,7 +13,7 @@ export default function CallPage() {
 
   const BackCall = () => {
     router.push({
-      pathname: '/utils/offer',
+      pathname: '/quotation/offer',
       query: 'query=' + docCallPage[0].รหัสเอกสาร,
     })
 

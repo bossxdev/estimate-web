@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
-import { setResPaperName, setResEnamelName } from '../store/reducers/Main'
-import { GET_PAPER_LIST, GET_ENAMEL_LIST } from '../../pages/api/GetData'
-import { paperSelect, enamelSelect } from '../../utils/HandingData'
-
+import {
+  setResPaperName,
+  setResEnamelName,
+} from '../store/reducers/main.reducer'
+import { GET_PAPER_LIST, GET_ENAMEL_LIST } from '../../pages/api/getData.api'
+import { paperSelect, enamelSelect } from '../utils/handingData'
+import axios from 'axios'
 const Part2ModalBody = (props) => {
   const dispatch = useDispatch()
-  
+
   const { resPaperName, resEnamelName } = useSelector((state) => state.main)
+  const { token } = useSelector((state) => state.auth)
 
   const [OutSide, SetOutSide] = useState(true)
   const [Dieline, SetDieline] = useState(true)
@@ -17,9 +20,29 @@ const Part2ModalBody = (props) => {
 
   //? Get Data : ประเภทกระดาษ และ การเคลือบ
   useEffect(() => {
+    const getPaperFormDB = async () => {
+      const paper = await GET_PAPER_LIST(token)
+
+      const paperAll = paper.map((response) => response.name)
+
+      console.log('paperAll', paperAll)
+      dispatch(setResPaperName(paperAll))
+    }
+
+    // const getEnamelFormDB = async () => {
+    //   const enamel = await GET_ENAMEL_LIST()
+    //   const enamelAll = []
+
+    //   enamel.map((response) => {
+    //     enamelAll.push(response.enamel_name)
+    //   })
+
+    //   dispatch(setResEnamelName(enamelAll))
+    // }
+    console.log('token', token)
     getPaperFormDB()
-    getEnamelFormDB()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // getEnamelFormDB()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const FX_More_One = (e) => {
@@ -39,29 +62,6 @@ const Part2ModalBody = (props) => {
         TableOne[GetObject].checked = true
       }
     }
-  }
-
-  const getPaperFormDB = async () => {
-    const paper = await GET_PAPER_LIST()
-    const paperAll = []
-
-    paper.map((response) => {
-      const { paperList } = response
-      paperAll.push(paperList.name)
-    })
-
-    dispatch(setResPaperName(paperAll))
-  }
-
-  const getEnamelFormDB = async () => {
-    const enamel = await GET_ENAMEL_LIST()
-    const enamelAll = []
-
-    enamel.map((response) => {
-      enamelAll.push(response.enamel_name)
-    })
-
-    dispatch(setResEnamelName(enamelAll))
   }
 
   return (

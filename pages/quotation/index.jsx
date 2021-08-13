@@ -1,10 +1,10 @@
 import React from 'react'
-import GetOffer from '../../src/components/GetOffer'
+import IndexPage from '../../src/components/indexPage'
 
 export default function offer() {
   return (
     <>
-      <GetOffer />
+      <IndexPage />
     </>
   )
 }

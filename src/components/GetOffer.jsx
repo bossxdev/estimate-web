@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useSelector, useDispatch } from 'react-redux'
-import { setDocOffer } from '../store/reducers/docParam'
-
+import { setDocOffer } from '../store/reducers/docParam.reducer'
+import { GET_PAPER_LIST, GET_ENAMEL_LIST } from '../../pages/api/getdata.api'
+import { paperSelect, enamelSelect } from '../utils/handingdata'
 import {
   setResPaperName,
   setResEnamelName,
-} from '../store/reducers/Main'
-
-import { GET_PAPER_LIST, GET_ENAMEL_LIST } from '../../pages/api/GetData'
-import { paperSelect, enamelSelect } from '../../utils/HandingData'
-
-import DataTable from './DataTable'
+} from '../store/reducers/main.reducer'
+import DataTable from './dataTable'
 
 export default function GetOffer() {
   const router = useRouter()
@@ -203,7 +200,7 @@ export default function GetOffer() {
 
   const SentCall = () => {
     router.push({
-      pathname: '/utils/callpage',
+      pathname: '/quotation/callpage',
       query: 'doc_code=' + docOffer[0].รหัสเอกสาร,
     })
 
@@ -309,16 +306,12 @@ export default function GetOffer() {
                   <label>
                     Status:{' '}
                     <span>
-                      <button className="New">
-                        {docOffer[0].สถานะลูกค้า}
-                      </button>
+                      <button className="New">{docOffer[0].สถานะลูกค้า}</button>
                       <button className="Off-line">Offline</button>
                       <button className="face-book">
                         {docOffer[0].ลูกค้า}
                       </button>
-                      <button className="line">
-                        {docOffer[0].ลูกค้า}
-                      </button>
+                      <button className="line">{docOffer[0].ลูกค้า}</button>
                     </span>
                   </label>
                   <br />
@@ -515,9 +508,7 @@ export default function GetOffer() {
                   <div className="col-span-4 add-bt-top add-top">
                     <input
                       onClick={() =>
-                        UVPrinting
-                          ? SetUVPrinting(false)
-                          : SetUVPrinting(true)
+                        UVPrinting ? SetUVPrinting(false) : SetUVPrinting(true)
                       }
                       type="checkbox"
                       className="mb-1 form-checkbox h-5 w-5 text-gray-600 ml-5 mr-2 rounded-full check-na"
@@ -573,9 +564,7 @@ export default function GetOffer() {
                     <div className="bg-head">
                       <div className="float-right lg:pt-4 bg-head">
                         <button
-                          onClick={() =>
-                            OutSide ? null : SetOutSide(true)
-                          }
+                          onClick={() => (OutSide ? null : SetOutSide(true))}
                           className={
                             OutSide
                               ? 'bg-green-300 custom-17 active'
@@ -585,9 +574,7 @@ export default function GetOffer() {
                           ด้านนอก
                         </button>
                         <button
-                          onClick={() =>
-                            OutSide ? SetOutSide(false) : null
-                          }
+                          onClick={() => (OutSide ? SetOutSide(false) : null)}
                           className={OutSide ? 'custom-18' : 'custom-18 active'}
                         >
                           ด้านใน
@@ -635,9 +622,7 @@ export default function GetOffer() {
                           <div className="custom-20 col-span-1">
                             <input
                               onClick={() =>
-                                Foiling
-                                  ? SetFoiling(false)
-                                  : SetFoiling(true)
+                                Foiling ? SetFoiling(false) : SetFoiling(true)
                               }
                               type="checkbox"
                               className="form-checkbox h-5 w-5 text-gray-600 ml-5 mr-2 rounded-full check-na form-checkbox-02"
@@ -647,9 +632,7 @@ export default function GetOffer() {
                           <div className="custom-20 col-span-1">
                             <input
                               onClick={() =>
-                                Foiling
-                                  ? SetFoiling(false)
-                                  : SetFoiling(true)
+                                Foiling ? SetFoiling(false) : SetFoiling(true)
                               }
                               type="checkbox"
                               className="form-checkbox h-5 w-5 text-gray-600 ml-5 mr-2 rounded-full check-na form-checkbox-02"
@@ -659,9 +642,7 @@ export default function GetOffer() {
                           <div className="custom-20 col-span-1">
                             <input
                               onClick={() =>
-                                Foiling
-                                  ? SetFoiling(false)
-                                  : SetFoiling(true)
+                                Foiling ? SetFoiling(false) : SetFoiling(true)
                               }
                               type="checkbox"
                               className="form-checkbox h-5 w-5 text-gray-600 ml-5 mr-2 rounded-full check-na form-checkbox-02"
@@ -671,9 +652,7 @@ export default function GetOffer() {
                           <div className="custom-22 col-span-1 lg:col-span-2">
                             <input
                               onClick={() =>
-                                Foiling
-                                  ? SetFoiling(false)
-                                  : SetFoiling(true)
+                                Foiling ? SetFoiling(false) : SetFoiling(true)
                               }
                               type="checkbox"
                               className="form-checkbox h-5 w-5 text-gray-600 ml-5 mr-2 rounded-full check-na form-checkbox-02"
@@ -1084,17 +1063,13 @@ export default function GetOffer() {
               <div className="col-span-8 lg:col-span-2">
                 <div className="both-btn2d">
                   <button
-                    onClick={() =>
-                      Dieline ? null : SetDieline(true)
-                    }
+                    onClick={() => (Dieline ? null : SetDieline(true))}
                     className={Dieline ? 'btn-2d active' : 'btn-2d'}
                   >
                     2D
                   </button>
                   <button
-                    onClick={() =>
-                      Dieline ? SetDieline(false) : null
-                    }
+                    onClick={() => (Dieline ? SetDieline(false) : null)}
                     className={Dieline ? 'btn-dieline' : 'btn-dieline active'}
                   >
                     Dieline
@@ -1275,7 +1250,7 @@ export default function GetOffer() {
             <DataTable obj={arrayOfObjects} dataInOnePage={5} />
             <span className="block m-auto text-center md:float-right mb-5 mt-2">
               <button onClick={SentCall} className="btn-layout mr-2">
-                คำนวนราคา
+                คำนวณราคา
               </button>
               <button className="btn-reset">แก้ไข</button>
             </span>

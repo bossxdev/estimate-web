@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Pagination from './Pagination.jsx'
+import Pagination from './pagination.jsx'
 
 export default class DataTable extends Component {
   constructor(props) {

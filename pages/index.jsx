@@ -1,6 +1,7 @@
 import React from 'react'
 import Head from 'next/head'
-import IndexPage from '../src/components/IndexPage'
+import IndexPage from '../src/components/indexpage'
+import Login from './login/login'
 
 const Header = () => {
   return (
@@ -17,7 +18,8 @@ export default function Home() {
   return (
     <>
       {Header()}
-      <IndexPage />
+      <Login />
+      {/* <IndexPage /> */}
     </>
   )
 }

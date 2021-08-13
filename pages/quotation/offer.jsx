@@ -1,10 +1,10 @@
 import React from 'react'
-import CallPage from '../../src/components/CallPage'
+import GetOffer from '../../src/components/getoffer'
 
 export default function offer() {
   return (
     <>
-      <CallPage />
+      <GetOffer />
     </>
   )
 }

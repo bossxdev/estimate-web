@@ -1,5 +1,4 @@
 import axios from 'axios'
-
 const api = 'http://localhost:4200/process'
 
 export const API_GET_PROCESS = async () => {
@@ -14,8 +13,13 @@ export const API_GET_PROCESS = async () => {
   }
 }
 
-export const GET_PAPER_LIST = async () => {
-  const result = await axios.get('https://web2pack.co/papers?_sort=id:ASC')
+export const GET_PAPER_LIST = async (token) => {
+  const url = 'http://localhost:8080/api/material/paper-category'
+  const result = await axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
   return result.data
 }
 
