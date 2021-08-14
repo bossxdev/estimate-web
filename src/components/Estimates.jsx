@@ -6,8 +6,9 @@ import {
 } from '../store/reducers/main.reducer'
 import { GET_PAPER_LIST, GET_ENAMEL_LIST } from '../../pages/api/getData.api'
 import { paperSelect, enamelSelect } from '../utils/handingData'
-import axios from 'axios'
+
 const Part2ModalBody = (props) => {
+  const { SentStateJsonOffer } = props
   const dispatch = useDispatch()
 
   const { resPaperName, resEnamelName } = useSelector((state) => state.main)
@@ -20,28 +21,21 @@ const Part2ModalBody = (props) => {
 
   //? Get Data : ประเภทกระดาษ และ การเคลือบ
   useEffect(() => {
+    //? ประเภทกระดาษ
     const getPaperFormDB = async () => {
       const paper = await GET_PAPER_LIST(token)
-
       const paperAll = paper.map((response) => response.name)
-
-      console.log('paperAll', paperAll)
       dispatch(setResPaperName(paperAll))
     }
-
-    // const getEnamelFormDB = async () => {
-    //   const enamel = await GET_ENAMEL_LIST()
-    //   const enamelAll = []
-
-    //   enamel.map((response) => {
-    //     enamelAll.push(response.enamel_name)
-    //   })
-
-    //   dispatch(setResEnamelName(enamelAll))
-    // }
-    console.log('token', token)
     getPaperFormDB()
-    // getEnamelFormDB()
+
+    //? การเคลือบ
+    const getEnamelFormDB = async () => {
+      const enamel = await GET_ENAMEL_LIST()
+      const enamelAll = enamel.map((response) => response.enamel_name)
+      dispatch(setResEnamelName(enamelAll))
+    }
+    getEnamelFormDB()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -794,7 +788,7 @@ const Part2ModalBody = (props) => {
           ยกเลิก
         </button>
         <button
-          onClick={() => props.GetWhenSendDoc(props.SentStateJsonOffer)}
+          onClick={() => props.GetWhenSendDoc(SentStateJsonOffer)}
           id="cancel-modal-na-ja"
           className="float-right custom-05 mt-2 inline-block hover:text-white focus:outline-none focus:text-white  hover:bg-blue-dark font-bold py-2 px-3 rounded-sm hover:bg-indigo-500 transition ease-in-out duration-300"
         >
@@ -806,14 +800,14 @@ const Part2ModalBody = (props) => {
 }
 
 const TheModalEstimate = (props) => {
+  const { SendDataValue, WhenSendDoc } = props
   const [CountDocNumber, SetCountDocNumber] = useState(
-    String(Number(props.SendDataValue.รหัสเอกสาร) + 1)
+    String(Number(SendDataValue.รหัสเอกสาร) + 1)
   )
   const [NameClient, SetNameClient] = useState('')
   const [ClientType, SetClientType] = useState('ลุกค้าเก่า')
 
-  const Digit =
-    Number(String(Number(props.SendDataValue.รหัสเอกสาร) + 1).length) - 1
+  const Digit = Number(String(Number(SendDataValue.รหัสเอกสาร) + 1).length) - 1
 
   let OurDate = new Date()
   let TheDay =
@@ -825,14 +819,14 @@ const TheModalEstimate = (props) => {
       ? OurDate.getMonth() + 1
       : '0' + String(OurDate.getMonth() + 1)
   const GetDate =
-    String(props.SendDataValue.วันที่) === ''
+    String(SendDataValue.วันที่) === ''
       ? String(TheDay + '/' + TheMonth + '/' + OurDate.getFullYear())
-      : String(props.SendDataValue.วันที่)
+      : String(SendDataValue.วันที่)
 
   const GetTime = String(
     OurDate.getHours() + ':' + OurDate.getMinutes() + ' น.'
   )
-  const OurSale = props.SendDataValue.ผู้ขอเอกสาร
+  const OurSale = SendDataValue.ผู้ขอเอกสาร
 
   useEffect(() => {
     let GetLastStr = '00000' + String(CountDocNumber)
@@ -890,7 +884,7 @@ const TheModalEstimate = (props) => {
                   {OurSale}
                   <br />
                   <label className="ball-sale">
-                    {props.SendDataValue.ฝ่ายผู้ขอเอกสาร}
+                    {SendDataValue.ฝ่ายผู้ขอเอกสาร}
                   </label>
                 </div>
               </div>
@@ -912,7 +906,7 @@ const TheModalEstimate = (props) => {
                 <div className="font-semibold p-2">
                   <span className="text-gray-800 label-ft">ลูกค้า:</span>
                   <input
-                    defaultValue={props.SendDataValue.ลูกค้า}
+                    defaultValue={SendDataValue.ลูกค้า}
                     onChange={(e) => SetNameClient(e.target.value)}
                     type="text"
                     className="lg:w-5/6 w-4/6 float-right focus:outline-none border rounded px-2 py-1 input-fx"
@@ -988,7 +982,7 @@ const TheModalEstimate = (props) => {
             SentStateJsonOffer={[
               {
                 วันที่: GetDate,
-                รหัสเอกสาร: String(Number(props.SendDataValue.รหัสเอกสาร) + 1),
+                รหัสเอกสาร: String(Number(SendDataValue.รหัสเอกสาร) + 1),
                 รายละเอียด: '',
                 ลูกค้า: NameClient,
                 สถานะลูกค้า: ClientType,
@@ -996,7 +990,7 @@ const TheModalEstimate = (props) => {
                 ผู้ออกเอกสาร: OurSale,
               },
             ]}
-            GetWhenSendDoc={props.WhenSendDoc}
+            GetWhenSendDoc={WhenSendDoc}
           />
         </div>
       </div>
@@ -1005,33 +999,34 @@ const TheModalEstimate = (props) => {
 }
 
 export default function Estimates(props) {
+  const { SendModeEditer, SentJsonDataToModal, SentFunctionGetDoc } = props
   const [StatusModalEstimate, SetStatusModalEstimate] = useState(false)
 
   let TheEdit =
-    Number(props.SendModeEditer[0].length) === 1
+    Number(SendModeEditer[0].length) === 1
       ? [
           {
-            วันที่: props.SendModeEditer[0][0].วันที่,
-            รหัสเอกสาร: Number(props.SendModeEditer[0][0].id) - 1,
-            รายละเอียด: props.SendModeEditer[0][0].รายละเอียด,
-            ลูกค้า: props.SendModeEditer[0][0].ลูกค้า,
-            สถานะลูกค้า: props.SendModeEditer[0][0].สถานะลูกค้า,
-            จำนวนงาน: props.SendModeEditer[0][0].จำนวนงาน,
-            ผู้ขอเอกสาร: String(props.SendModeEditer[0][0].ผู้ขอเอกสาร),
-            ฝ่ายผู้ขอเอกสาร: props.SendModeEditer[0][0].ฝ่ายผู้ขอเอกสาร,
-            ผู้เสนอราคา: props.SendModeEditer[0][0].ผู้เสนอราคาม,
-            ฝ่ายผู้เสนอเอกสาร: props.SendModeEditer[0][0].ฝ่ายผู้เสนอเอกสาร,
+            วันที่: SendModeEditer[0][0].วันที่,
+            รหัสเอกสาร: Number(SendModeEditer[0][0].id) - 1,
+            รายละเอียด: SendModeEditer[0][0].รายละเอียด,
+            ลูกค้า: SendModeEditer[0][0].ลูกค้า,
+            สถานะลูกค้า: SendModeEditer[0][0].สถานะลูกค้า,
+            จำนวนงาน: SendModeEditer[0][0].จำนวนงาน,
+            ผู้ขอเอกสาร: String(SendModeEditer[0][0].ผู้ขอเอกสาร),
+            ฝ่ายผู้ขอเอกสาร: SendModeEditer[0][0].ฝ่ายผู้ขอเอกสาร,
+            ผู้เสนอราคา: SendModeEditer[0][0].ผู้เสนอราคาม,
+            ฝ่ายผู้เสนอเอกสาร: SendModeEditer[0][0].ฝ่ายผู้เสนอเอกสาร,
           },
         ]
       : [
           {
             วันที่: '',
-            รหัสเอกสาร: props.SentJsonDataToModal[0],
+            รหัสเอกสาร: SentJsonDataToModal[0],
             รายละเอียด: '',
             ลูกค้า: '',
             สถานะลูกค้า: '',
             จำนวนงาน: '',
-            ผู้ขอเอกสาร: props.SentJsonDataToModal[1],
+            ผู้ขอเอกสาร: SentJsonDataToModal[1],
             ฝ่ายผู้ขอเอกสาร: 'ฝ่ายขาย',
             ผู้เสนอราคา: '',
             ฝ่ายผู้เสนอเอกสาร: '',
@@ -1055,10 +1050,10 @@ export default function Estimates(props) {
 
   return (
     <>
-      {StatusModalEstimate || Number(props.SendModeEditer[0].length) === 1 ? (
+      {StatusModalEstimate || Number(SendModeEditer[0].length) === 1 ? (
         <TheModalEstimate
-          WhenSendDoc={props.SentFunctionGetDoc}
-          SendFxExitEdit={props.SendModeEditer[1]}
+          WhenSendDoc={SentFunctionGetDoc}
+          SendFxExitEdit={SendModeEditer[1]}
           SendDataValue={TheEdit[0]}
           SendFunc={WhenStayInModal}
         />

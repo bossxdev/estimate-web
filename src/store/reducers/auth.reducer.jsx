@@ -1,8 +1,8 @@
 import API from '../../../pages/api/http'
-import * as EndPoints from '../../../pages/api/EndPoints'
-import { message } from 'antd'
 import Cookies from 'js-cookie'
+import * as EndPoints from '../../../pages/api/EndPoints'
 import { HTTP_STATUS_CODE } from '../../utils/constants'
+import { message } from 'antd'
 
 const LOGIN_REQUEST = 'Auth/LOGIN_REQUEST'
 const LOGIN_SUCCESS = 'Auth/LOGIN_SUCCESS'
@@ -19,7 +19,6 @@ const FETCH_CURRENT_USER_FAILURE = 'Auth/FETCH_CURRENT_USER_FAILURE'
 const STORE_USER = 'Auth/STORE_USER'
 const REMOVE_USER = 'Auth/REMOVE_USER'
 
-// Initialize State
 const initialState = {
   isAuthenticate: false,
   user: {},
@@ -29,7 +28,6 @@ const initialState = {
   token: '',
 }
 
-// Default Reducer
 const auth = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_REQUEST:
@@ -104,7 +102,6 @@ const auth = (state = initialState, action) => {
 
 export default auth
 
-// Action Creators
 export const getCurrentUser = () => {
   return async (dispatch) => {
     try {

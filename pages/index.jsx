@@ -1,6 +1,5 @@
 import React from 'react'
 import Head from 'next/head'
-import IndexPage from '../src/components/indexpage'
 import Login from './login/login'
 
 const Header = () => {
@@ -19,7 +18,6 @@ export default function Home() {
     <>
       {Header()}
       <Login />
-      {/* <IndexPage /> */}
     </>
   )
 }

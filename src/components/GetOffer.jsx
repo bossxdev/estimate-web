@@ -22,8 +22,9 @@ export default function GetOffer() {
   const [UVPrinting, SetUVPrinting] = useState(false)
   const [GetDetailBox, SetGetDetailBox] = useState('')
 
-  const { docOffer } = useSelector((state) => state.docParam)
   const { resPaperName, resEnamelName } = useSelector((state) => state.main)
+  const { docOffer } = useSelector((state) => state.docParam)
+  const { token } = useSelector((state) => state.auth)
 
   const arrayOfObjects = [
     {
@@ -193,7 +194,20 @@ export default function GetOffer() {
 
   //? Get Data : ประเภทกระดาษ และ การเคลือบ
   useEffect(() => {
+    //? ประเภทกระดาษ
+    const getPaperFormDB = async () => {
+      const paper = await GET_PAPER_LIST(token)
+      const paperAll = paper.map((response) => response.name)
+      dispatch(setResPaperName(paperAll))
+    }
     getPaperFormDB()
+
+    //? การเคลือบ
+    const getEnamelFormDB = async () => {
+      const enamel = await GET_ENAMEL_LIST()
+      const enamelAll = enamel.map((response) => response.enamel_name)
+      dispatch(setResEnamelName(enamelAll))
+    }
     getEnamelFormDB()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -241,29 +255,6 @@ export default function GetOffer() {
         TableOne[GetObject].checked = true
       }
     }
-  }
-
-  const getPaperFormDB = async () => {
-    const paper = await GET_PAPER_LIST()
-    const paperAll = []
-
-    paper.map((response) => {
-      const { paperList } = response
-      paperAll.push(paperList.name)
-    })
-
-    dispatch(setResPaperName(paperAll))
-  }
-
-  const getEnamelFormDB = async () => {
-    const enamel = await GET_ENAMEL_LIST()
-    const enamelAll = []
-
-    enamel.map((response) => {
-      enamelAll.push(response.enamel_name)
-    })
-
-    dispatch(setResEnamelName(enamelAll))
   }
 
   return (

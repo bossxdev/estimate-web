@@ -209,7 +209,7 @@ export default function IndexPage() {
       dispatch(
         setDocOffer([
           {
-            วันที่: String(Filter[0].วันที่),
+            วันที่: Filter[0].วันที่,
             รหัสเอกสาร: Filter[0].รหัสเอกสาร,
             รายละเอียด: Filter[0].รายละเอียด,
             ลูกค้า: Filter[0].ลูกค้า,
