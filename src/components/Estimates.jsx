@@ -31,8 +31,8 @@ const Part2ModalBody = (props) => {
 
     //? การเคลือบ
     const getEnamelFormDB = async () => {
-      const enamel = await GET_ENAMEL_LIST()
-      const enamelAll = enamel.map((response) => response.enamel_name)
+      const enamel = await GET_ENAMEL_LIST(token)
+      const enamelAll = enamel.map((response) => response.enamels_name)
       dispatch(setResEnamelName(enamelAll))
     }
     getEnamelFormDB()

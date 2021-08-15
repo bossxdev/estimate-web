@@ -14,7 +14,7 @@ export const API_GET_PROCESS = async () => {
 }
 
 export const GET_PAPER_LIST = async (token) => {
-  const url = 'http://localhost:8080/api/material/paper-category'
+  const url = 'http://localhost:8080/api/material/paper-category?_sort=id:ASC'
   const result = await axios.get(url, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -23,7 +23,12 @@ export const GET_PAPER_LIST = async (token) => {
   return result.data
 }
 
-export const GET_ENAMEL_LIST = async () => {
-  const result = await axios.get(`https://web2pack.co/enamel-prices`)
+export const GET_ENAMEL_LIST = async (token) => {
+  const url = 'http://localhost:8080/api/enamels-price?_sort=id:ASC'
+  const result = await axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
   return result.data
 }

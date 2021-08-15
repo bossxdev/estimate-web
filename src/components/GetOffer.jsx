@@ -204,8 +204,8 @@ export default function GetOffer() {
 
     //? การเคลือบ
     const getEnamelFormDB = async () => {
-      const enamel = await GET_ENAMEL_LIST()
-      const enamelAll = enamel.map((response) => response.enamel_name)
+      const enamel = await GET_ENAMEL_LIST(token)
+      const enamelAll = enamel.map((response) => response.enamels_name)
       dispatch(setResEnamelName(enamelAll))
     }
     getEnamelFormDB()
@@ -410,7 +410,9 @@ export default function GetOffer() {
                   </span>
                   <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
                     <option>เลือกสินค้า</option>
-                    {enamelSelect(resEnamelName)}
+                    <option>One</option>
+                    <option>Two</option>
+                    <option>Three</option>
                   </select>
                   <span className="col-span-1 text-gray-800 text-look-product-show">
                     รูปแบบสินค้า:

@@ -1,4 +1,5 @@
 import React from 'react'
+import Head from 'next/head'
 import { wrapper } from '../src/store'
 import { PersistGate } from 'redux-persist/integration/react'
 import { useStore } from 'react-redux'
@@ -18,10 +19,16 @@ function WrappedApp({ Component, pageProps }) {
   })
 
   return (
-    <PersistGate persistor={store.__persistor} loading={null}>
-      <GlobalStyle />
-      <Component {...pageProps} />
-    </PersistGate>
+    <>
+      <Head>
+        <title>Estimate-Extreme</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <PersistGate persistor={store.__persistor} loading={null}>
+        <GlobalStyle />
+        <Component {...pageProps} />
+      </PersistGate>
+    </>
   )
 }
 
