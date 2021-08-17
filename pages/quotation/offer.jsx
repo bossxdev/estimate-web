@@ -1,5 +1,5 @@
 import React from 'react'
-import GetOffer from '../../src/components/getoffer'
+import GetOffer from '../../src/components/getOffer'
 
 export default function offer() {
   return (

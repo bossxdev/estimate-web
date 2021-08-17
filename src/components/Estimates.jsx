@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+  setResMaterialName,
   setResPaperName,
   setResEnamelName,
 } from '../store/reducers/main.reducer'
-import { GET_PAPER_LIST, GET_ENAMEL_LIST } from '../../pages/api/getData.api'
-import { paperSelect, enamelSelect } from '../utils/handingData'
+import {
+  GET_MATERIAL_CATEGORY,
+  GET_PAPER_LIST,
+  GET_ENAMEL_LIST,
+} from '../../pages/api/getData.api'
+import { materialSelect, paperSelect, enamelSelect } from '../utils/handingData'
 
 const Part2ModalBody = (props) => {
   const { SentStateJsonOffer } = props
   const dispatch = useDispatch()
 
-  const { resPaperName, resEnamelName } = useSelector((state) => state.main)
+  const { resMaterialName, resPaperName, resEnamelName } = useSelector(
+    (state) => state.main
+  )
   const { token } = useSelector((state) => state.auth)
 
   const [OutSide, SetOutSide] = useState(true)
@@ -21,6 +28,14 @@ const Part2ModalBody = (props) => {
 
   //? Get Data : ประเภทกระดาษ และ การเคลือบ
   useEffect(() => {
+    //? รูปแบบสินค้า
+    const getMaterialFormDB = async () => {
+      const material = await GET_MATERIAL_CATEGORY(token)
+      const materialAll = material.map((response) => response.name)
+      dispatch(setResMaterialName(materialAll))
+    }
+    getMaterialFormDB()
+
     //? ประเภทกระดาษ
     const getPaperFormDB = async () => {
       const paper = await GET_PAPER_LIST(token)
@@ -58,6 +73,10 @@ const Part2ModalBody = (props) => {
     }
   }
 
+  const testFunction = () => {
+    console.log('work')
+  }
+
   return (
     <div className="bg-white now-set-modal-height">
       <div className="lg:p-5 p-1 m-1 lg:ml-1 lg:mr-1 bg-white">
@@ -72,27 +91,19 @@ const Part2ModalBody = (props) => {
                 สินค้า:
               </span>
               <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
-                <option>เลือกสินค้า</option>
-                <option>One</option>
-                <option>Two</option>
-                <option>Three</option>
+                <option selected disabled>
+                  เลือกสินค้า
+                </option>
+                <option>กล่องบรรจุภัณฑ์</option>
               </select>
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 รูปแบบสินค้า:
               </span>
-              <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
-                <option>เลือกรูปแบบสินค้า</option>
-                <option>One</option>
-                <option>Two</option>
-                <option>Three</option>
-              </select>
+              {materialSelect(resMaterialName)}
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 ประเภทกระดาษ:
               </span>
-              <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
-                <option>เลือกประเภทกระดาษ</option>
-                {paperSelect(resPaperName)}
-              </select>
+              {paperSelect(resPaperName)}
             </div>
           </div>
           <div className="border-gray-300 border rounded-sm size-pro-na">
@@ -317,10 +328,7 @@ const Part2ModalBody = (props) => {
                     <tr>
                       <td className="t1">การเคลือบ</td>
                       <td colSpan="4" className="t2">
-                        <select className="w-full border rounded py-2 focus:outline-none input-fx">
-                          <option>เลือกสินค้า</option>
-                          {enamelSelect(resEnamelName)}
-                        </select>
+                        {enamelSelect(resEnamelName)}
                       </td>
                     </tr>
                     <tr>

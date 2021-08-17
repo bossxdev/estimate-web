@@ -13,22 +13,38 @@ export const API_GET_PROCESS = async () => {
   }
 }
 
-export const GET_PAPER_LIST = async (token) => {
-  const url = 'http://localhost:8080/api/material/paper-category?_sort=id:ASC'
+/* #region  //? รูปแบบสินค้า - ชนิดกล่องบรรจุภัณฑ์ */
+
+export const GET_MATERIAL_CATEGORY = async (token) => {
+  const url = 'http://localhost:8080/api/material/material-category?sort=id:ASC'
   const result = await axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
   })
   return result.data
 }
 
+export const GET_PAPER_LIST = async (token) => {
+  const url = 'http://localhost:8080/api/material/paper-category?_sort=id:ASC'
+  const result = await axios.get(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return result.data
+}
+
+/* #endregion */
+
 export const GET_ENAMEL_LIST = async (token) => {
   const url = 'http://localhost:8080/api/enamels-price?_sort=id:ASC'
   const result = await axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return result.data
+}
+
+export const GET_PRINTER_NAME = async (token) => {
+  const url = 'http://localhost:8080/api/material/printer-category?_sort=id:ASC'
+  const result = await axios.get(url, {
+    headers: { Authorization: `Bearer ${token}` },
   })
   return result.data
 }

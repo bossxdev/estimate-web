@@ -2,12 +2,22 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useSelector, useDispatch } from 'react-redux'
 import { setDocOffer } from '../store/reducers/docParam.reducer'
-import { GET_PAPER_LIST, GET_ENAMEL_LIST } from '../../pages/api/getdata.api'
-import { paperSelect, enamelSelect } from '../utils/handingdata'
 import {
   setResPaperName,
   setResEnamelName,
+  setResPrinterName,
 } from '../store/reducers/main.reducer'
+import {
+  GET_PAPER_LIST,
+  GET_ENAMEL_LIST,
+  GET_PRINTER_NAME,
+} from '../../pages/api/getdata.api'
+import {
+  materialSelect,
+  paperSelect,
+  enamelSelect,
+  printerSelect,
+} from '../utils/handingData'
 import DataTable from './dataTable'
 
 export default function GetOffer() {
@@ -20,9 +30,9 @@ export default function GetOffer() {
   const [OpenMoreDetail, SetMoreDetail] = useState(false)
   const [Foiling, SetFoiling] = useState(false)
   const [UVPrinting, SetUVPrinting] = useState(false)
-  const [GetDetailBox, SetGetDetailBox] = useState('')
 
-  const { resPaperName, resEnamelName } = useSelector((state) => state.main)
+  const { resMaterialName, resPaperName, resEnamelName, resPrinterName } =
+    useSelector((state) => state.main)
   const { docOffer } = useSelector((state) => state.docParam)
   const { token } = useSelector((state) => state.auth)
 
@@ -178,14 +188,6 @@ export default function GetOffer() {
 
   useEffect(
     () =>
-      docOffer[0].รายละเอียด
-        ? SetGetDetailBox(docOffer[0].รายละเอียด.split(' '))
-        : '',
-    [docOffer]
-  )
-
-  useEffect(
-    () =>
       ClickLay
         ? window.scrollTo(0, document.body.scrollHeight)
         : window.scrollTo(0, document.body.scrollTop),
@@ -209,6 +211,14 @@ export default function GetOffer() {
       dispatch(setResEnamelName(enamelAll))
     }
     getEnamelFormDB()
+
+    //? เครื่องพิมพ์
+    const getPrinterFormDB = async () => {
+      const printer = await GET_PRINTER_NAME(token)
+      const printerAll = printer.map((response) => response.name)
+      dispatch(setResPrinterName(printerAll))
+    }
+    getPrinterFormDB()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -409,27 +419,19 @@ export default function GetOffer() {
                     สินค้า:
                   </span>
                   <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
-                    <option>เลือกสินค้า</option>
-                    <option>One</option>
-                    <option>Two</option>
-                    <option>Three</option>
+                    <option selected disabled>
+                      เลือกสินค้า
+                    </option>
+                    <option>กล่องบรรจุภัณฑ์</option>
                   </select>
                   <span className="col-span-1 text-gray-800 text-look-product-show">
                     รูปแบบสินค้า:
                   </span>
-                  <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
-                    <option>เลือกรูปแบบสินค้า</option>
-                    <option>One</option>
-                    <option>Two</option>
-                    <option>Three</option>
-                  </select>
+                  {materialSelect(resMaterialName)}
                   <span className="col-span-1 text-gray-800 text-look-product-show">
                     ประเภทกระดาษ:
                   </span>
-                  <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
-                    <option>เลือกประเภทกระดาษ</option>
-                    {paperSelect(resPaperName)}
-                  </select>
+                  {paperSelect(resPaperName)}
                 </div>
               </div>
               <div className="border-gray-300 border rounded-sm set-height-01">
@@ -582,7 +584,6 @@ export default function GetOffer() {
                       <td className="t1">การเคลือบ</td>
                       <td colSpan="4" className="t2">
                         <select className="w-full border rounded py-2 focus:outline-none input-fx">
-                          <option>เลือกสินค้า</option>
                           {enamelSelect(resEnamelName)}
                         </select>
                       </td>
@@ -950,9 +951,7 @@ export default function GetOffer() {
                 </div>
                 <label
                   onClick={() =>
-                    OpenMoreDetail
-                      ? setOpenModeDetail(false)
-                      : setOpenModeDetail(true)
+                    OpenMoreDetail ? SetMoreDetail(false) : SetMoreDetail(true)
                   }
                   className="ml-6 more-detail-na"
                 >
@@ -1085,17 +1084,11 @@ export default function GetOffer() {
             <div className="grid grid-cols-5 gap-0">
               <div className="col-span-2 con-0">ประเภทกระดาษ</div>
               <div className="col-span-2 con-1 flex">
-                <select className="m-auto border float-left rounded  focus:outline-none input-fx">
-                  {paperSelect(resPaperName)}
-                </select>
+                {paperSelect(resPaperName)}
               </div>
               <div className="col-span-1 con-2"></div>
               <div className="col-span-5 con-3">
-                <span className="span-v">
-                  <select className="m-auto border rounded  focus:outline-none input-fx">
-                    {paperSelect(resPaperName)}
-                  </select>
-                </span>
+                <span className="span-v">{printerSelect(resPrinterName)}</span>
               </div>
             </div>
           </div>
