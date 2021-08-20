@@ -1,9 +1,11 @@
-const SET_RES_MATERIAL_NAME = 'SET_RES_MATERIAL_NAME'
-const SET_RES_PAPER_NAME = 'SET_RES_PAPER_NAME'
-const SET_RES_ENAMEL_NAME = 'SET_RES_ENAMEL_NAME'
-const SET_RES_PRINTER_NAME = 'SET_RES_PRINTER_NAME'
+const SET_RES_PRODUCT_NAME = 'Main/SET_RES_PRODUCT_NAME'
+const SET_RES_MATERIAL_NAME = 'Main/SET_RES_MATERIAL_NAME'
+const SET_RES_PAPER_NAME = 'Main/SET_RES_PAPER_NAME'
+const SET_RES_ENAMEL_NAME = 'Main/SET_RES_ENAMEL_NAME'
+const SET_RES_PRINTER_NAME = 'Main/SET_RES_PRINTER_NAME'
 
 const initialState = {
+  resProductName: [],
   resMaterialName: [],
   resPaperName: [],
   resEnamelName: [],
@@ -12,6 +14,11 @@ const initialState = {
 
 export default function Main(state = initialState, action) {
   switch (action.type) {
+    case SET_RES_PRODUCT_NAME:
+      return {
+        ...state,
+        resProductName: action.payload,
+      }
     case SET_RES_MATERIAL_NAME:
       return {
         ...state,
@@ -34,6 +41,15 @@ export default function Main(state = initialState, action) {
       }
     default:
       return state
+  }
+}
+
+export const setResProductName = (data) => {
+  return async (dispatch) => {
+    dispatch({
+      type: SET_RES_PRODUCT_NAME,
+      payload: data,
+    })
   }
 }
 

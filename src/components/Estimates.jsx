@@ -1,24 +1,30 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+  setResProductName,
   setResMaterialName,
   setResPaperName,
   setResEnamelName,
 } from '../store/reducers/main.reducer'
 import {
+  GET_PRODUCT_CATEGORY,
   GET_MATERIAL_CATEGORY,
   GET_PAPER_LIST,
   GET_ENAMEL_LIST,
 } from '../../pages/api/getData.api'
-import { materialSelect, paperSelect, enamelSelect } from '../utils/handingData'
+import {
+  productSelect,
+  materialSelect,
+  paperSelect,
+  enamelSelect,
+} from '../utils/handingData'
 
 const Part2ModalBody = (props) => {
   const { SentStateJsonOffer } = props
   const dispatch = useDispatch()
 
-  const { resMaterialName, resPaperName, resEnamelName } = useSelector(
-    (state) => state.main
-  )
+  const { resProductName, resMaterialName, resPaperName, resEnamelName } =
+    useSelector((state) => state.main)
   const { token } = useSelector((state) => state.auth)
 
   const [OutSide, SetOutSide] = useState(true)
@@ -26,12 +32,19 @@ const Part2ModalBody = (props) => {
   const [UVPrinting, SetUVPrinting] = useState(false)
   const [Foiling, SetFoiling] = useState(false)
 
-  //? Get Data : ประเภทกระดาษ และ การเคลือบ
   useEffect(() => {
+    // //? สินค้า
+    const getProductFormDB = async () => {
+      const product = await GET_PRODUCT_CATEGORY(token)
+      const productAll = product.map(({ name }) => name)
+      dispatch(setResProductName(productAll))
+    }
+    getProductFormDB()
+
     //? รูปแบบสินค้า
     const getMaterialFormDB = async () => {
       const material = await GET_MATERIAL_CATEGORY(token)
-      const materialAll = material.map((response) => response.name)
+      const materialAll = material.map(({ name }) => name)
       dispatch(setResMaterialName(materialAll))
     }
     getMaterialFormDB()
@@ -39,7 +52,7 @@ const Part2ModalBody = (props) => {
     //? ประเภทกระดาษ
     const getPaperFormDB = async () => {
       const paper = await GET_PAPER_LIST(token)
-      const paperAll = paper.map((response) => response.name)
+      const paperAll = paper.map(({ name }) => name)
       dispatch(setResPaperName(paperAll))
     }
     getPaperFormDB()
@@ -47,7 +60,7 @@ const Part2ModalBody = (props) => {
     //? การเคลือบ
     const getEnamelFormDB = async () => {
       const enamel = await GET_ENAMEL_LIST(token)
-      const enamelAll = enamel.map((response) => response.enamels_name)
+      const enamelAll = enamel.map(({ enamels_name }) => enamels_name)
       dispatch(setResEnamelName(enamelAll))
     }
     getEnamelFormDB()
@@ -73,9 +86,9 @@ const Part2ModalBody = (props) => {
     }
   }
 
-  const testFunction = () => {
-    console.log('work')
-  }
+  // const [prevMaterial, setPrevMaterial] = useState('')
+
+  // const materialSelect = () => {
 
   return (
     <div className="bg-white now-set-modal-height">
@@ -90,12 +103,7 @@ const Part2ModalBody = (props) => {
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 สินค้า:
               </span>
-              <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
-                <option selected disabled>
-                  เลือกสินค้า
-                </option>
-                <option>กล่องบรรจุภัณฑ์</option>
-              </select>
+              {productSelect(resProductName)}
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 รูปแบบสินค้า:
               </span>
