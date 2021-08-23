@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "start:debug": "yarn --cwd /Users/ratchanikorn-boss/Documents/estimate/estimate-api nest start --debug --watch",
+    "start": "yarn --cwd /Users/ratchanikorn-boss/Documents/estimate/api-estimate start",
     "build": "next build",
-    "start": "next start",
     "clear": "rm -rf .next out",
     "export": "next build && next export",
     "test": "react-scripts test --env=jsdom",
