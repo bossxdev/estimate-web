@@ -1,6 +1,6 @@
 import API from '../../../pages/api/http'
 import Cookies from 'js-cookie'
-import * as EndPoints from '../../../pages/api/EndPoints'
+import * as EndPoints from '../../../pages/api/endPoints'
 import { HTTP_STATUS_CODE } from '../../utils/constants'
 import { message } from 'antd'
 

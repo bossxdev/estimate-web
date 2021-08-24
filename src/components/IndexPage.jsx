@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
 import { setDocOffer } from '../store/reducers/docParam.reducer'
-import { API_GET_PROCESS } from '../../pages/api/getdata.api'
+import PostData from '../../process.json'
 import axios from 'axios'
 import DataTable from './dataTable'
 import Estimates from './estimates'
@@ -40,7 +40,7 @@ export default function IndexPage() {
   })
 
   const GetApi = async (StatApi) => {
-    const result = await API_GET_PROCESS()
+    const result = PostData
 
     if (result) {
       if (StatApi) {
