@@ -86,9 +86,18 @@ const Part2ModalBody = (props) => {
     }
   }
 
-  // const [prevMaterial, setPrevMaterial] = useState('')
+  const [test, setTest] = useState()
 
-  // const materialSelect = () => {
+  const product = (e) => {
+    if (e.target.value === '0') {
+      const testnamematerial = resMaterialName.map((name) => (
+        <option key={''}>{name}</option>
+      ))
+      setTest(testnamematerial)
+    }
+  }
+
+  console.log('test -->', test)
 
   return (
     <div className="bg-white now-set-modal-height">
@@ -103,11 +112,31 @@ const Part2ModalBody = (props) => {
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 สินค้า:
               </span>
-              {productSelect(resProductName)}
+              <select
+                className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
+                onChange={product}
+              >
+                <option selected disabled>
+                  เลือกสินค้า
+                </option>
+                {resProductName.map((response, index) => (
+                  <option key={''} value={index}>
+                    {response}
+                  </option>
+                ))}
+              </select>
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 รูปแบบสินค้า:
               </span>
-              {materialSelect(resMaterialName)}
+              <select
+                className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
+                // onChange={material}
+              >
+                <option selected disabled>
+                  เลือกรูปแบบสินค้า
+                </option>
+                {test}
+              </select>
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 ประเภทกระดาษ:
               </span>

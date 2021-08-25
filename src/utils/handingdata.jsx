@@ -12,14 +12,15 @@ export const productSelect = (resProductName) => {
     <>
       <select
         className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
-        onChange={(e) => product(e)}
+        onChange={product}
       >
         <option selected disabled>
           เลือกสินค้า
         </option>
         {dataButton.map((response, index) => (
-          // eslint-disable-next-line react/jsx-key
-          <option value={index}>{response}</option>
+          <option key={''} value={index}>
+            {response}
+          </option>
         ))}
       </select>
     </>
@@ -38,14 +39,15 @@ export const materialSelect = (resMaterialName) => {
     <>
       <select
         className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
-        onChange={(e) => material(e)}
+        onChange={material}
       >
         <option selected disabled>
           เลือกรูปแบบสินค้า
         </option>
         {dataButton.map((response, index) => (
-          // eslint-disable-next-line react/jsx-key
-          <option value={index}>{response}</option>
+          <option key={''} value={index}>
+            {response}
+          </option>
         ))}
       </select>
     </>
@@ -64,14 +66,15 @@ export const paperSelect = (resPaperName) => {
     <>
       <select
         className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
-        onChange={(e) => paper(e)}
+        onChange={paper}
       >
         <option selected disabled>
           เลือกประเภทกระดาษ
         </option>
         {dataButton.map((response, index) => (
-          // eslint-disable-next-line react/jsx-key
-          <option value={index}>{response}</option>
+          <option key={''} value={index}>
+            {response}
+          </option>
         ))}
       </select>
     </>
@@ -90,14 +93,15 @@ export const enamelSelect = (resEnamelName) => {
     <>
       <select
         className="w-full border rounded py-2 focus:outline-none input-fx"
-        onChange={(e) => enamel(e)}
+        onChange={enamel}
       >
         <option selected disabled>
           เลือกการเคลือบ
         </option>
         {dataButton.map((response, index) => (
-          // eslint-disable-next-line react/jsx-key
-          <option value={index}>{response}</option>
+          <option key={''} value={index}>
+            {response}
+          </option>
         ))}
       </select>
     </>
@@ -116,14 +120,15 @@ export const printerSelect = (resPrinterName) => {
     <>
       <select
         className="m-auto border rounded  focus:outline-none input-fx"
-        onChange={(e) => printer(e)}
+        onChange={printer}
       >
         <option selected disabled>
           เลือกประเภทเครื่องพิมพ์
         </option>
         {dataButton.map((response, index) => (
-          // eslint-disable-next-line react/jsx-key
-          <option value={index}>{response}</option>
+          <option key={''} value={index}>
+            {response}
+          </option>
         ))}
       </select>
     </>
