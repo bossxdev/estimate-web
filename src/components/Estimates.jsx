@@ -13,9 +13,6 @@ import {
   GET_ENAMEL_LIST,
 } from '../../pages/api/getData.api'
 import {
-  product,
-  materialSelect,
-  paperSelect,
   enamelSelect,
 } from '../utils/handingData'
 
@@ -31,6 +28,8 @@ const Part2ModalBody = (props) => {
   const [Dieline, SetDieline] = useState(true)
   const [UVPrinting, SetUVPrinting] = useState(false)
   const [Foiling, SetFoiling] = useState(false)
+  const [materialName, setMaterialName] = useState()
+  const [paperName, setPaperName] = useState()
 
   useEffect(() => {
     // //? สินค้า
@@ -67,27 +66,14 @@ const Part2ModalBody = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const FX_More_One = (e) => {
-    let GetClass = e.target.className
-
-    for (let Count0 = 1; Count0 <= 5; Count0++) {
-      if (
-        String(GetClass) ===
-        'form-checkbox h-5 w-5 text-gray-600 ml-5 mr-2 rounded-full check-na form-checkbox-0' +
-          Count0
-      ) {
-        let TableOne = document.querySelectorAll('.form-checkbox-0' + Count0)
-        let GetObject = Array.from(TableOne).indexOf(e.target)
-        for (let Count = 0; Count < TableOne.length; Count++) {
-          TableOne[Count].checked = false
-        }
-        TableOne[GetObject].checked = true
-      }
-    }
+  const product = (resProductName) => {
+    const dataButton = resProductName.map((response, index) => (
+      <option key={''} value={index}>
+        {response}
+      </option>
+    ))
+    return dataButton
   }
-
-  const [materialName, setMaterialName] = useState()
-  const [paperName, setPaperName] = useState()
 
   const material = (e) => {
     if (e.target.value === '0') {
@@ -106,6 +92,25 @@ const Part2ModalBody = (props) => {
         <option key={''}>{name}</option>
       ))
       setPaperName(dataButton)
+    }
+  }
+
+  const FX_More_One = (e) => {
+    let GetClass = e.target.className
+
+    for (let Count0 = 1; Count0 <= 5; Count0++) {
+      if (
+        String(GetClass) ===
+        'form-checkbox h-5 w-5 text-gray-600 ml-5 mr-2 rounded-full check-na form-checkbox-0' +
+          Count0
+      ) {
+        let TableOne = document.querySelectorAll('.form-checkbox-0' + Count0)
+        let GetObject = Array.from(TableOne).indexOf(e.target)
+        for (let Count = 0; Count < TableOne.length; Count++) {
+          TableOne[Count].checked = false
+        }
+        TableOne[GetObject].checked = true
+      }
     }
   }
 

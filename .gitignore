@@ -110,3 +110,5 @@ yarn.lock
 .vscode/
 
 pages/.DS_Store
+
+.DS_Store

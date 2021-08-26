@@ -1,42 +1,5 @@
 import React from 'react'
 
-//? สินค้า
-export const product = (resProductName) => {
-  const dataButton = resProductName.map((response, index) => (
-    <option key={''} value={index}>
-      {response}
-    </option>
-  ))
-  return dataButton
-}
-
-//? รูปแบบสินค้า
-export const materialSelect = (resMaterialName) => {
-  const dataButton = resMaterialName
-
-  const material = (e) => {
-    return e.target.value
-  }
-
-  return (
-    <>
-      <select
-        className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
-        onChange={material}
-      >
-        <option selected disabled>
-          เลือกรูปแบบสินค้า
-        </option>
-        {dataButton.map((response, index) => (
-          <option key={''} value={index}>
-            {response}
-          </option>
-        ))}
-      </select>
-    </>
-  )
-}
-
 //? ประเภทกระดาษ
 export const paperSelect = (resPaperName) => {
   const dataButton = resPaperName

@@ -16,13 +16,7 @@ import {
   GET_ENAMEL_LIST,
   GET_PRINTER_NAME,
 } from '../../pages/api/getdata.api'
-import {
-  product,
-  materialSelect,
-  paperSelect,
-  enamelSelect,
-  printerSelect,
-} from '../utils/handingData'
+import { paperSelect, enamelSelect, printerSelect } from '../utils/handingData'
 import DataTable from './dataTable'
 
 export default function GetOffer() {
@@ -35,6 +29,8 @@ export default function GetOffer() {
   const [OpenMoreDetail, SetMoreDetail] = useState(false)
   const [Foiling, SetFoiling] = useState(false)
   const [UVPrinting, SetUVPrinting] = useState(false)
+  const [materialName, setMaterialName] = useState()
+  const [paperName, setPaperName] = useState()
 
   const {
     resProductName,
@@ -247,6 +243,35 @@ export default function GetOffer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const product = (resProductName) => {
+    const dataButton = resProductName.map((response, index) => (
+      <option key={''} value={index}>
+        {response}
+      </option>
+    ))
+    return dataButton
+  }
+
+  const material = (e) => {
+    if (e.target.value === '0') {
+      const dataButton = resMaterialName.map((response, index) => (
+        <option key={''} value={index}>
+          {response}
+        </option>
+      ))
+      setMaterialName(dataButton)
+    }
+  }
+
+  const paper = (e) => {
+    if (e.target.value === '0') {
+      const dataButton = resPaperName.map((name) => (
+        <option key={''}>{name}</option>
+      ))
+      setPaperName(dataButton)
+    }
+  }
+
   const SentCall = () => {
     router.push({
       pathname: '/quotation/callpage',
@@ -289,19 +314,6 @@ export default function GetOffer() {
         }
         TableOne[GetObject].checked = true
       }
-    }
-  }
-
-  const [materialName, setMaterialName] = useState()
-
-  const material = (e) => {
-    if (e.target.value === '0') {
-      const dataButton = resMaterialName.map((response, index) => (
-        <option key={''} value={index}>
-          {response}
-        </option>
-      ))
-      setMaterialName(dataButton)
     }
   }
 
@@ -466,14 +478,29 @@ export default function GetOffer() {
                     </option>
                     {product(resProductName)}
                   </select>
+                  {/* //? รูปแบบสินค้า */}
                   <span className="col-span-1 text-gray-800 text-look-product-show">
                     รูปแบบสินค้า:
                   </span>
-                  {materialSelect(resMaterialName)}
+                  <select
+                    className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
+                    onChange={paper}
+                  >
+                    <option selected disabled>
+                      เลือกรูปแบบสินค้า
+                    </option>
+                    {materialName}
+                  </select>
+                  {/* //? ประเภทกระดาษ */}
                   <span className="col-span-1 text-gray-800 text-look-product-show">
                     ประเภทกระดาษ:
                   </span>
-                  {paperSelect(resPaperName)}
+                  <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
+                    <option selected disabled>
+                      เลือกประเภทกระดาษ
+                    </option>
+                    {paperName}
+                  </select>
                 </div>
               </div>
               <div className="border-gray-300 border rounded-sm set-height-01">
