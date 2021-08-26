@@ -6,15 +6,15 @@ import {
   setResPaperName,
   setResEnamelName,
 } from '../store/reducers/main.reducer'
+import { setUnit } from '../store/reducers/boxes.reducer'
 import {
   GET_PRODUCT_CATEGORY,
   GET_MATERIAL_CATEGORY,
   GET_PAPER_LIST,
   GET_ENAMEL_LIST,
 } from '../../pages/api/getData.api'
-import {
-  enamelSelect,
-} from '../utils/handingData'
+import { enamelSelect } from '../utils/handingData'
+import TUCK_END_BOXES_MAIN from './boxes/tuckEndBoxes/main'
 
 const Part2ModalBody = (props) => {
   const { SentStateJsonOffer } = props
@@ -23,6 +23,7 @@ const Part2ModalBody = (props) => {
   const { resProductName, resMaterialName, resPaperName, resEnamelName } =
     useSelector((state) => state.main)
   const { token } = useSelector((state) => state.auth)
+  const { A, B, C, F, P, unit } = useSelector((state) => state.boxes)
 
   const [OutSide, SetOutSide] = useState(true)
   const [Dieline, SetDieline] = useState(true)
@@ -30,6 +31,7 @@ const Part2ModalBody = (props) => {
   const [Foiling, SetFoiling] = useState(false)
   const [materialName, setMaterialName] = useState()
   const [paperName, setPaperName] = useState()
+  const [, setPrevUnit] = useState('mm')
 
   useEffect(() => {
     // //? สินค้า
@@ -94,6 +96,50 @@ const Part2ModalBody = (props) => {
       setPaperName(dataButton)
     }
   }
+
+  const handleCheckUnit = (e) => {
+    let value = e.target.value,
+      pre
+
+    setPrevUnit((prevState) => {
+      pre = prevState
+      return { value }
+    }) //?  pre เก็บค่าตัวแปร value ที่รับเข้ามาก่อนหน้า
+
+    // mm
+    if (value === 'mm') {
+      if (pre === 'cm') {
+        dispatch(setUnit(value))
+      }
+      dispatch(setUnit(value))
+    }
+    // cm
+    if (value === 'cm') {
+      if (pre === 'inch') {
+        dispatch(setUnit(value))
+      }
+      dispatch(setUnit(value))
+    }
+    // in
+    if (value === 'inch') {
+      if (pre === 'cm') {
+        dispatch(setUnit(value))
+      }
+      dispatch(setUnit(value))
+    }
+  }
+
+  const selectUnit = () => (
+    <select
+      className="border rounded px-2 py-2 focus:outline-none"
+      value={unit}
+      onChange={handleCheckUnit}
+    >
+      <option value="mm">mm</option>
+      <option value="cm">cm</option>
+      <option value="inch">inch</option>
+    </select>
+  )
 
   const FX_More_One = (e) => {
     let GetClass = e.target.className
@@ -169,11 +215,7 @@ const Part2ModalBody = (props) => {
               </div>
               <div className="font-semibold lg:p-3 float-right bg-head">
                 <span className="text-white">เลือกหน่วย:</span>
-                <select className="border rounded px-2 py-2 focus:outline-none">
-                  <option>เซนติเมตร</option>
-                  <option>Two</option>
-                  <option>Three</option>
-                </select>
+                {selectUnit()}
               </div>
             </div>
             <div className="grid gap-4 lg:grid-cols-2 na-ja">
@@ -184,7 +226,7 @@ const Part2ModalBody = (props) => {
                     <input
                       type="text"
                       className="focus:outline-none border rounded px-2 py-1 input-fx"
-                      placeholder="00.00"
+                      value={A}
                     />
                     cm
                   </span>
@@ -195,7 +237,7 @@ const Part2ModalBody = (props) => {
                     <input
                       type="text"
                       className="focus:outline-none border rounded px-2 py-1 input-fx"
-                      placeholder="00.00"
+                      value={B}
                     />
                     cm
                   </span>
@@ -206,7 +248,7 @@ const Part2ModalBody = (props) => {
                     <input
                       type="text"
                       className="focus:outline-none border rounded px-2 py-1 input-fx"
-                      placeholder="00.00"
+                      value={C}
                     />
                     cm
                   </span>
@@ -219,7 +261,7 @@ const Part2ModalBody = (props) => {
                     <input
                       type="text"
                       className="focus:outline-none border rounded px-2 py-1 input-fx"
-                      placeholder="00.00"
+                      value={F}
                     />
                     %
                   </span>
@@ -230,15 +272,27 @@ const Part2ModalBody = (props) => {
                     <input
                       type="text"
                       className="focus:outline-none border rounded px-2 py-1 input-fx"
-                      placeholder="00.00"
+                      value={P}
                     />
                     cm
                   </span>
                 </div>
               </div>
             </div>
-            <div className="rounded-sm border ml-2 mr-2 px-2 py-3 text-center total m-5 left-right">
-              ขนาดสินค้ารวม 15 x 20 x 20 cm. ขนาดสินค้าไม่เกิน A$
+            <div className="rounded-sm border ml-2 mr-2 px-2 py-3 text-center m-5 left-right">
+              {`ขนาดสินค้ารวม ${A} x ${B} ${unit} ขนาดสินค้าไม่เกิน ${
+                A * B >= 999949
+                  ? 'A0'
+                  : A * B >= 499554
+                  ? 'A1'
+                  : A * B >= 249480
+                  ? 'A2'
+                  : A * B >= 124740
+                  ? 'A3'
+                  : A * B >= 62370
+                  ? 'A4'
+                  : 'A5'
+              }`}
             </div>
           </div>
         </div>
@@ -686,11 +740,12 @@ const Part2ModalBody = (props) => {
                 </div>
               </div>
               <div className="col-span-3 lg:col-span-2">
-                <img
+                {/* <img
                   className="box-pic01"
                   src="https://www.img.in.th/images/e3a0d7d949e2459292f771fa1e7581c3.png"
                   alt="1"
-                />
+                /> */}
+                <TUCK_END_BOXES_MAIN />
               </div>
             </div>
             <div className="border-gray-300 border rounded-sm mt-3">
