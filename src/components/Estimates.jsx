@@ -87,17 +87,27 @@ const Part2ModalBody = (props) => {
   }
 
   const [test, setTest] = useState()
+  const [testX, setTestX] = useState()
 
   const product = (e) => {
     if (e.target.value === '0') {
-      const testnamematerial = resMaterialName.map((name) => (
-        <option key={''}>{name}</option>
+      const testnamematerial = resMaterialName.map((name, index) => (
+        <option key={''} value={index}>
+          {name}
+        </option>
       ))
       setTest(testnamematerial)
     }
   }
 
-  console.log('test -->', test)
+  const material = (e) => {
+    if (e.target.value === '0') {
+      const testnamepaper = resPaperName.map((name) => (
+        <option key={''}>{name}</option>
+      ))
+      setTestX(testnamepaper)
+    }
+  }
 
   return (
     <div className="bg-white now-set-modal-height">
@@ -130,7 +140,7 @@ const Part2ModalBody = (props) => {
               </span>
               <select
                 className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
-                // onChange={material}
+                onChange={material}
               >
                 <option selected disabled>
                   เลือกรูปแบบสินค้า
@@ -140,7 +150,12 @@ const Part2ModalBody = (props) => {
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 ประเภทกระดาษ:
               </span>
-              {paperSelect(resPaperName)}
+              <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
+                <option selected disabled>
+                  เลือกประเภทกระดาษ
+                </option>
+                {testX}
+              </select>
             </div>
           </div>
           <div className="border-gray-300 border rounded-sm size-pro-na">
