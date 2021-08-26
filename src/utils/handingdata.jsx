@@ -1,30 +1,13 @@
 import React from 'react'
 
 //? สินค้า
-export const productSelect = (resProductName) => {
-  const dataButton = resProductName
-
-  const product = (e) => {
-    return e.target.value
-  }
-
-  return (
-    <>
-      <select
-        className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
-        onChange={product}
-      >
-        <option selected disabled>
-          เลือกสินค้า
-        </option>
-        {dataButton.map((response, index) => (
-          <option key={''} value={index}>
-            {response}
-          </option>
-        ))}
-      </select>
-    </>
-  )
+export const product = (resProductName) => {
+  const dataButton = resProductName.map((response, index) => (
+    <option key={''} value={index}>
+      {response}
+    </option>
+  ))
+  return dataButton
 }
 
 //? รูปแบบสินค้า

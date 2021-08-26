@@ -17,7 +17,7 @@ import {
   GET_PRINTER_NAME,
 } from '../../pages/api/getdata.api'
 import {
-  productSelect,
+  product,
   materialSelect,
   paperSelect,
   enamelSelect,
@@ -292,6 +292,19 @@ export default function GetOffer() {
     }
   }
 
+  const [materialName, setMaterialName] = useState()
+
+  const material = (e) => {
+    if (e.target.value === '0') {
+      const dataButton = resMaterialName.map((response, index) => (
+        <option key={''} value={index}>
+          {response}
+        </option>
+      ))
+      setMaterialName(dataButton)
+    }
+  }
+
   return (
     <div className="offer-page">
       <div className="lg:container lg:mx-auto lg:px-4 bg-out">
@@ -440,10 +453,19 @@ export default function GetOffer() {
                   <label className="mt-4">สเปกสินค้า</label>
                 </div>
                 <div className="grid  gap-4 grid-cols-3 spec-product">
+                  {/* //? เลือกสินค้า */}
                   <span className="col-span-1 text-gray-800 text-look-product-show">
                     สินค้า:
                   </span>
-                  {productSelect(resProductName)}
+                  <select
+                    className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
+                    onChange={material}
+                  >
+                    <option selected disabled>
+                      เลือกสินค้า
+                    </option>
+                    {product(resProductName)}
+                  </select>
                   <span className="col-span-1 text-gray-800 text-look-product-show">
                     รูปแบบสินค้า:
                   </span>

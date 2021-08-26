@@ -13,7 +13,7 @@ import {
   GET_ENAMEL_LIST,
 } from '../../pages/api/getData.api'
 import {
-  productSelect,
+  product,
   materialSelect,
   paperSelect,
   enamelSelect,
@@ -86,26 +86,26 @@ const Part2ModalBody = (props) => {
     }
   }
 
-  const [test, setTest] = useState()
-  const [testX, setTestX] = useState()
-
-  const product = (e) => {
-    if (e.target.value === '0') {
-      const testnamematerial = resMaterialName.map((name, index) => (
-        <option key={''} value={index}>
-          {name}
-        </option>
-      ))
-      setTest(testnamematerial)
-    }
-  }
+  const [materialName, setMaterialName] = useState()
+  const [paperName, setPaperName] = useState()
 
   const material = (e) => {
     if (e.target.value === '0') {
-      const testnamepaper = resPaperName.map((name) => (
+      const dataButton = resMaterialName.map((response, index) => (
+        <option key={''} value={index}>
+          {response}
+        </option>
+      ))
+      setMaterialName(dataButton)
+    }
+  }
+
+  const paper = (e) => {
+    if (e.target.value === '0') {
+      const dataButton = resPaperName.map((name) => (
         <option key={''}>{name}</option>
       ))
-      setTestX(testnamepaper)
+      setPaperName(dataButton)
     }
   }
 
@@ -119,34 +119,33 @@ const Part2ModalBody = (props) => {
               <label className="mt-4">สเปกสินค้า</label>
             </div>
             <div className="grid  gap-4 grid-cols-3 spec-product">
+              {/* //? เลือกสินค้า */}
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 สินค้า:
-              </span>
-              <select
-                className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
-                onChange={product}
-              >
-                <option selected disabled>
-                  เลือกสินค้า
-                </option>
-                {resProductName.map((response, index) => (
-                  <option key={''} value={index}>
-                    {response}
-                  </option>
-                ))}
-              </select>
-              <span className="col-span-1 text-gray-800 text-look-product-show">
-                รูปแบบสินค้า:
               </span>
               <select
                 className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
                 onChange={material}
               >
                 <option selected disabled>
+                  เลือกสินค้า
+                </option>
+                {product(resProductName)}
+              </select>
+              {/* //? รูปแบบสินค้า */}
+              <span className="col-span-1 text-gray-800 text-look-product-show">
+                รูปแบบสินค้า:
+              </span>
+              <select
+                className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
+                onChange={paper}
+              >
+                <option selected disabled>
                   เลือกรูปแบบสินค้า
                 </option>
-                {test}
+                {materialName}
               </select>
+              {/* //? ประเภทกระดาษ */}
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 ประเภทกระดาษ:
               </span>
@@ -154,7 +153,7 @@ const Part2ModalBody = (props) => {
                 <option selected disabled>
                   เลือกประเภทกระดาษ
                 </option>
-                {testX}
+                {paperName}
               </select>
             </div>
           </div>
