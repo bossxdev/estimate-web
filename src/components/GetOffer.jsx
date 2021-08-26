@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useSelector, useDispatch } from 'react-redux'
+import { InputNumber } from 'antd'
 import { setDocOffer } from '../store/reducers/docParam.reducer'
 import {
   setResProductName,
@@ -10,6 +11,14 @@ import {
   setResPrinterName,
 } from '../store/reducers/main.reducer'
 import {
+  setA,
+  setB,
+  setC,
+  setF,
+  setP,
+  setUnit,
+} from '../store/reducers/boxes.reducer'
+import {
   GET_PRODUCT_CATEGORY,
   GET_MATERIAL_CATEGORY,
   GET_PAPER_LIST,
@@ -17,20 +26,12 @@ import {
   GET_PRINTER_NAME,
 } from '../../pages/api/getdata.api'
 import { paperSelect, enamelSelect, printerSelect } from '../utils/handingData'
+import TUCK_END_BOXES_MAIN from './boxes/tuckEndBoxes/main'
 import DataTable from './dataTable'
 
 export default function GetOffer() {
   const router = useRouter()
   const dispatch = useDispatch()
-
-  const [ClickLay, SetClickLay] = useState(false)
-  const [OutSide, SetOutSide] = useState(true)
-  const [Dieline, SetDieline] = useState(true)
-  const [OpenMoreDetail, SetMoreDetail] = useState(false)
-  const [Foiling, SetFoiling] = useState(false)
-  const [UVPrinting, SetUVPrinting] = useState(false)
-  const [materialName, setMaterialName] = useState()
-  const [paperName, setPaperName] = useState()
 
   const {
     resProductName,
@@ -41,6 +42,19 @@ export default function GetOffer() {
   } = useSelector((state) => state.main)
   const { docOffer } = useSelector((state) => state.docParam)
   const { token } = useSelector((state) => state.auth)
+  const { A, B, C, F, P, unit } = useSelector((state) => state.boxes)
+
+  const [ClickLay, SetClickLay] = useState(false)
+  const [OutSide, SetOutSide] = useState(true)
+  const [Dieline, SetDieline] = useState(true)
+  const [OpenMoreDetail, SetMoreDetail] = useState(false)
+  const [Foiling, SetFoiling] = useState(false)
+  const [UVPrinting, SetUVPrinting] = useState(false)
+  const [materialName, setMaterialName] = useState()
+  const [paperName, setPaperName] = useState()
+  const [, setPrevUnit] = useState('mm')
+
+  const defaultUnit = { mm: 1, cm: 10, inch: 25.4 }
 
   const arrayOfObjects = [
     {
@@ -271,6 +285,72 @@ export default function GetOffer() {
       setPaperName(dataButton)
     }
   }
+
+  const handleChangeSize = (value, type) => {
+    switch (type) {
+      case 'width':
+        dispatch(setA(value))
+        break
+      case 'depth':
+        dispatch(setB(value))
+        break
+      case 'height':
+        dispatch(setC(value))
+        break
+      case 'flap':
+        dispatch(setF(value))
+        break
+      case 'plug':
+        dispatch(setP(value))
+        break
+      default:
+        return ''
+    }
+  }
+
+  const handleCheckUnit = (e) => {
+    let value = e.target.value,
+      pre
+
+    setPrevUnit((prevState) => {
+      pre = prevState
+      return { value }
+    }) //?  pre เก็บค่าตัวแปร value ที่รับเข้ามาก่อนหน้า
+
+    // mm
+    if (value === 'mm') {
+      if (pre === 'cm') {
+        dispatch(setUnit(value))
+      }
+      dispatch(setUnit(value))
+    }
+    // cm
+    if (value === 'cm') {
+      if (pre === 'inch') {
+        dispatch(setUnit(value))
+      }
+      dispatch(setUnit(value))
+    }
+    // in
+    if (value === 'inch') {
+      if (pre === 'cm') {
+        dispatch(setUnit(value))
+      }
+      dispatch(setUnit(value))
+    }
+  }
+
+  const selectUnit = () => (
+    <select
+      className="border rounded px-2 py-2 focus:outline-none"
+      value={unit}
+      onChange={handleCheckUnit}
+    >
+      <option value="mm">mm</option>
+      <option value="cm">cm</option>
+      <option value="inch">inch</option>
+    </select>
+  )
 
   const SentCall = () => {
     router.push({
@@ -945,11 +1025,7 @@ export default function GetOffer() {
                   </div>
                   <div className="font-semibold lg:p-3 float-right bg-head">
                     <span className="text-white">เลือกหน่วย:</span>
-                    <select className="border rounded px-2 py-2 focus:outline-none">
-                      <option>เซนติเมตร</option>
-                      <option>Two</option>
-                      <option>Three</option>
-                    </select>
+                    {selectUnit()}
                   </div>
                 </div>
                 <div className="grid gap-4 lg:grid-cols-2 na-ja">
@@ -957,34 +1033,51 @@ export default function GetOffer() {
                     <div className="font-semibold">
                       <span className="text-gray-800">
                         ด้าน A
-                        <input
-                          type="text"
+                        <InputNumber
                           className="focus:outline-none border rounded px-2 py-1 input-fx"
-                          placeholder="00.00"
+                          step={1}
+                          value={`${
+                            unit === 'mm'
+                              ? (A / defaultUnit[unit]).toFixed(2)
+                              : (A / defaultUnit[unit]).toFixed(1)
+                          }`}
+                          onChange={(value) => handleChangeSize(value, 'width')}
                         />
-                        cm
+                        mm
                       </span>
                     </div>
                     <div className="font-semibold">
                       <span className="text-gray-800">
                         ด้าน B
-                        <input
-                          type="text"
+                        <InputNumber
                           className="focus:outline-none border rounded px-2 py-1 input-fx"
-                          placeholder="00.00"
+                          step={1}
+                          value={`${
+                            unit === 'mm'
+                              ? (B / defaultUnit[unit]).toFixed(2)
+                              : (B / defaultUnit[unit]).toFixed(1)
+                          }`}
+                          onChange={(value) => handleChangeSize(value, 'depth')}
                         />
-                        cm
+                        mm
                       </span>
                     </div>
                     <div className="font-semibold">
                       <span className="text-gray-800">
                         ด้าน C
-                        <input
-                          type="text"
+                        <InputNumber
                           className="focus:outline-none border rounded px-2 py-1 input-fx"
-                          placeholder="00.00"
+                          step={1}
+                          value={`${
+                            unit === 'mm'
+                              ? (C / defaultUnit[unit]).toFixed(2)
+                              : (C / defaultUnit[unit]).toFixed(1)
+                          }`}
+                          onChange={(value) =>
+                            handleChangeSize(value, 'height')
+                          }
                         />
-                        cm
+                        mm
                       </span>
                     </div>
                   </div>
@@ -992,10 +1085,15 @@ export default function GetOffer() {
                     <div className="font-semibold">
                       <span className="text-gray-800">
                         FLAP
-                        <input
-                          type="text"
+                        <InputNumber
                           className="focus:outline-none border rounded px-2 py-1 input-fx"
-                          placeholder="00.00"
+                          step={1}
+                          value={`${
+                            unit === 'mm'
+                              ? (F / defaultUnit[unit]).toFixed(2)
+                              : (F / defaultUnit[unit]).toFixed(1)
+                          }`}
+                          onChange={(value) => handleChangeSize(value, 'flap')}
                         />
                         %
                       </span>
@@ -1003,18 +1101,35 @@ export default function GetOffer() {
                     <div className="font-semibold">
                       <span className="text-gray-800">
                         PLUG
-                        <input
-                          type="text"
+                        <InputNumber
                           className="focus:outline-none border rounded px-2 py-1 input-fx"
-                          placeholder="00.00"
+                          step={1}
+                          value={`${
+                            unit === 'mm'
+                              ? (P / defaultUnit[unit]).toFixed(2)
+                              : (P / defaultUnit[unit]).toFixed(1)
+                          }`}
+                          onChange={(value) => handleChangeSize(value, 'plug')}
                         />
-                        cm
+                        mm
                       </span>
                     </div>
                   </div>
                 </div>
                 <div className="rounded-sm border ml-2 mr-2 px-2 py-3 text-center total m-5 left-right">
-                  ขนาดสินค้ารวม 15 x 20 x 20 cm. ขนาดสินค้าไม่เกิน A$
+                  {`ขนาดสินค้ารวม ${A} x ${B} ${unit} ขนาดสินค้าไม่เกิน ${
+                    A * B >= 999949
+                      ? 'A0'
+                      : A * B >= 499554
+                      ? 'A1'
+                      : A * B >= 249480
+                      ? 'A2'
+                      : A * B >= 124740
+                      ? 'A3'
+                      : A * B >= 62370
+                      ? 'A4'
+                      : 'A5'
+                  }`}
                 </div>
                 <label
                   onClick={() =>
@@ -1113,11 +1228,7 @@ export default function GetOffer() {
                 ภาพตัวอย่างกล่องเมื่อกางออก
               </label>
               <div className="mt-6 mb-7 lg:col-span-4 col-span-8">
-                <img
-                  className="box-pic01"
-                  src="https://www.img.in.th/images/e3a0d7d949e2459292f771fa1e7581c3.png"
-                  alt="1"
-                />
+                <TUCK_END_BOXES_MAIN />
               </div>
               <div className="col-span-8 lg:col-span-2">
                 <div className="both-btn2d">

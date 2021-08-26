@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { InputNumber } from 'antd'
 import {
   setResProductName,
   setResMaterialName,
   setResPaperName,
   setResEnamelName,
 } from '../store/reducers/main.reducer'
-import { setUnit } from '../store/reducers/boxes.reducer'
+import {
+  setA,
+  setB,
+  setC,
+  setF,
+  setP,
+  setUnit,
+} from '../store/reducers/boxes.reducer'
 import {
   GET_PRODUCT_CATEGORY,
   GET_MATERIAL_CATEGORY,
@@ -32,6 +40,8 @@ const Part2ModalBody = (props) => {
   const [materialName, setMaterialName] = useState()
   const [paperName, setPaperName] = useState()
   const [, setPrevUnit] = useState('mm')
+
+  const defaultUnit = { mm: 1, cm: 10, inch: 25.4 }
 
   useEffect(() => {
     // //? สินค้า
@@ -94,6 +104,28 @@ const Part2ModalBody = (props) => {
         <option key={''}>{name}</option>
       ))
       setPaperName(dataButton)
+    }
+  }
+
+  const handleChangeSize = (value, type) => {
+    switch (type) {
+      case 'width':
+        dispatch(setA(value))
+        break
+      case 'depth':
+        dispatch(setB(value))
+        break
+      case 'height':
+        dispatch(setC(value))
+        break
+      case 'flap':
+        dispatch(setF(value))
+        break
+      case 'plug':
+        dispatch(setP(value))
+        break
+      default:
+        return ''
     }
   }
 
@@ -223,34 +255,49 @@ const Part2ModalBody = (props) => {
                 <div className="font-semibold">
                   <span className="text-gray-800">
                     ด้าน A
-                    <input
-                      type="text"
+                    <InputNumber
                       className="focus:outline-none border rounded px-2 py-1 input-fx"
-                      value={A}
+                      step={1}
+                      value={`${
+                        unit === 'mm'
+                          ? (A / defaultUnit[unit]).toFixed(2)
+                          : (A / defaultUnit[unit]).toFixed(1)
+                      }`}
+                      onChange={(value) => handleChangeSize(value, 'width')}
                     />
-                    cm
+                    mm
                   </span>
                 </div>
                 <div className="font-semibold">
                   <span className="text-gray-800">
                     ด้าน B
-                    <input
-                      type="text"
+                    <InputNumber
                       className="focus:outline-none border rounded px-2 py-1 input-fx"
-                      value={B}
+                      step={1}
+                      value={`${
+                        unit === 'mm'
+                          ? (B / defaultUnit[unit]).toFixed(2)
+                          : (B / defaultUnit[unit]).toFixed(1)
+                      }`}
+                      onChange={(value) => handleChangeSize(value, 'depth')}
                     />
-                    cm
+                    mm
                   </span>
                 </div>
                 <div className="font-semibold">
                   <span className="text-gray-800">
                     ด้าน C
-                    <input
-                      type="text"
+                    <InputNumber
                       className="focus:outline-none border rounded px-2 py-1 input-fx"
-                      value={C}
+                      step={1}
+                      value={`${
+                        unit === 'mm'
+                          ? (C / defaultUnit[unit]).toFixed(2)
+                          : (C / defaultUnit[unit]).toFixed(1)
+                      }`}
+                      onChange={(value) => handleChangeSize(value, 'height')}
                     />
-                    cm
+                    mm
                   </span>
                 </div>
               </div>
@@ -258,10 +305,15 @@ const Part2ModalBody = (props) => {
                 <div className="font-semibold">
                   <span className="text-gray-800">
                     FLAP
-                    <input
-                      type="text"
+                    <InputNumber
                       className="focus:outline-none border rounded px-2 py-1 input-fx"
-                      value={F}
+                      step={1}
+                      value={`${
+                        unit === 'mm'
+                          ? (F / defaultUnit[unit]).toFixed(2)
+                          : (F / defaultUnit[unit]).toFixed(1)
+                      }`}
+                      onChange={(value) => handleChangeSize(value, 'flap')}
                     />
                     %
                   </span>
@@ -269,12 +321,17 @@ const Part2ModalBody = (props) => {
                 <div className="font-semibold">
                   <span className="text-gray-800">
                     PLUG
-                    <input
-                      type="text"
+                    <InputNumber
                       className="focus:outline-none border rounded px-2 py-1 input-fx"
-                      value={P}
+                      step={1}
+                      value={`${
+                        unit === 'mm'
+                          ? (P / defaultUnit[unit]).toFixed(2)
+                          : (P / defaultUnit[unit]).toFixed(1)
+                      }`}
+                      onChange={(value) => handleChangeSize(value, 'plug')}
                     />
-                    cm
+                    mm
                   </span>
                 </div>
               </div>
@@ -740,11 +797,6 @@ const Part2ModalBody = (props) => {
                 </div>
               </div>
               <div className="col-span-3 lg:col-span-2">
-                {/* <img
-                  className="box-pic01"
-                  src="https://www.img.in.th/images/e3a0d7d949e2459292f771fa1e7581c3.png"
-                  alt="1"
-                /> */}
                 <TUCK_END_BOXES_MAIN />
               </div>
             </div>

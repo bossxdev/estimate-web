@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "start:debug": "yarn --cwd /Users/ratchanikorn-boss/Documents/estimate/estimate-api nest start --debug --watch",
+    "start:debug": "yarn --cwd /Users/macos/Documents/estimate/estimate-api nest start --debug --watch",
     "build": "next build",
     "start": "next start",
     "clear": "rm -rf .next out",
