@@ -15,10 +15,13 @@ import * as THREE from 'three'
 import Init from '../init'
 
 import { tuckEndBoxes } from './tuckEndBoxes'
+import { tuckEndBoxesLay } from './tuckEndBoxesLay'
 
 export default function TUCK_END_BOXES_MAIN() {
   const dispatch = useDispatch()
-  const { A, B, C, F, P, G, GSlope, unit } = useSelector((state) => state.boxes)
+  const { A, B, C, F, P, G, GSlope, unit, layout } = useSelector(
+    (state) => state.boxes
+  )
 
   const [scene, setScene] = useState(new THREE.Scene())
 
@@ -35,7 +38,11 @@ export default function TUCK_END_BOXES_MAIN() {
 
   useEffect(() => {
     const groupAll = new THREE.Group()
-    groupAll.add(tuckEndBoxes(A, B, C, F, P, G, GSlope, unit))
+    groupAll.add(
+      layout
+        ? tuckEndBoxes(A, B, C, F, P, G, GSlope, unit)
+        : tuckEndBoxesLay(A, B, C, F, P, G, GSlope)
+    )
 
     setScene((prevState) => {
       prevState.add(groupAll)
@@ -45,7 +52,7 @@ export default function TUCK_END_BOXES_MAIN() {
     return () => {
       setScene(new THREE.Scene())
     }
-  }, [A, B, C, F, P, G, GSlope, unit])
+  }, [A, B, C, F, P, G, GSlope, unit, layout])
 
   return <Init sceneModel={scene} />
 }

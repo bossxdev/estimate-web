@@ -14,6 +14,7 @@ import {
   setF,
   setP,
   setUnit,
+  setLayout,
 } from '../store/reducers/boxes.reducer'
 import {
   GET_PRODUCT_CATEGORY,
@@ -77,6 +78,10 @@ const Part2ModalBody = (props) => {
     getEnamelFormDB()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    Dieline ? dispatch(setLayout(Dieline)) : dispatch(setLayout(Dieline))
+  }, [Dieline, dispatch])
 
   const product = (resProductName) => {
     const dataButton = resProductName.map((response, index) => (

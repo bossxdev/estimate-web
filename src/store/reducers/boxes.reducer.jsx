@@ -6,6 +6,7 @@ const SET_P = 'Boxes/SET_P'
 const SET_G = 'Boxes/SET_G'
 const SET_G_SLOPE = 'Boxes/SET_G_SLOPE'
 const SET_UNIT = 'Boxes/SET_UNIT'
+const SET_LAYOUT = 'Boxes/SET_LAYOUT'
 
 const initialState = {
   A: null,
@@ -16,6 +17,7 @@ const initialState = {
   G: null,
   GSlope: null,
   unit: 'mm',
+  layout: false,
 }
 
 export default function Boxes(state = initialState, action) {
@@ -59,6 +61,11 @@ export default function Boxes(state = initialState, action) {
       return {
         ...state,
         unit: action.payload,
+      }
+    case SET_LAYOUT:
+      return {
+        ...state,
+        layout: action.payload,
       }
     default:
       return state
@@ -132,6 +139,15 @@ export const setUnit = (data) => {
   return async (dispatch) => {
     dispatch({
       type: SET_UNIT,
+      payload: data,
+    })
+  }
+}
+
+export const setLayout = (data) => {
+  return async (dispatch) => {
+    dispatch({
+      type: SET_LAYOUT,
       payload: data,
     })
   }
