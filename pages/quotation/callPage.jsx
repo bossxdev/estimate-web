@@ -1,5 +1,5 @@
 import React from 'react'
-import CallPage from '../../src/components/callPage'
+import CallPage from '../../src/components/CallPage'
 
 export default function offer() {
   return (
