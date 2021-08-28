@@ -4,8 +4,8 @@ import { useDispatch } from 'react-redux'
 import { setDocOffer } from '../store/reducers/docParam.reducer'
 import PostData from '../../process.json'
 import axios from 'axios'
-import DataTable from './dataTable'
-import Estimates from './estimates'
+import DataTable from './DataTable'
+import Estimates from './Estimates'
 
 export default function IndexPage() {
   const router = useRouter()

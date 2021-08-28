@@ -22,7 +22,7 @@ import {
   GET_PAPER_LIST,
   GET_ENAMEL_LIST,
 } from '../../pages/api/getData.api'
-import { enamelSelect } from '../utils/handingData'
+import { enamelSelect } from '../utils/handingdata'
 import TUCK_END_BOXES_MAIN from './boxes/tuckEndBoxes/main'
 
 const Part2ModalBody = (props) => {
