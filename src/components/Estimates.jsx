@@ -1,26 +1,182 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
-import { setResPaperName, setResEnamelName } from '../store/reducers/Main'
-import { GET_PAPER_LIST, GET_ENAMEL_LIST } from '../../pages/api/GetData'
-import { paperSelect, enamelSelect } from '../../utils/HandingData'
+import { InputNumber } from 'antd'
+import {
+  setResProductName,
+  setResMaterialName,
+  setResPaperName,
+  setResEnamelName,
+} from '../store/reducers/main.reducer'
+import {
+  setA,
+  setB,
+  setC,
+  setF,
+  setP,
+  setUnit,
+  setLayout,
+} from '../store/reducers/boxes.reducer'
+import {
+  GET_PRODUCT_CATEGORY,
+  GET_MATERIAL_CATEGORY,
+  GET_PAPER_LIST,
+  GET_ENAMEL_LIST,
+} from '../../pages/api/getData.api'
+import { enamelSelect } from '../utils/handingData'
+import TUCK_END_BOXES_MAIN from './boxes/tuckEndBoxes/main'
 
 const Part2ModalBody = (props) => {
+  const { SentStateJsonOffer } = props
   const dispatch = useDispatch()
-  
-  const { resPaperName, resEnamelName } = useSelector((state) => state.main)
+
+  const { resProductName, resMaterialName, resPaperName, resEnamelName } =
+    useSelector((state) => state.main)
+  const { token } = useSelector((state) => state.auth)
+  const { A, B, C, F, P, unit } = useSelector((state) => state.boxes)
 
   const [OutSide, SetOutSide] = useState(true)
   const [Dieline, SetDieline] = useState(true)
   const [UVPrinting, SetUVPrinting] = useState(false)
   const [Foiling, SetFoiling] = useState(false)
+  const [materialName, setMaterialName] = useState()
+  const [paperName, setPaperName] = useState()
+  const [, setPrevUnit] = useState('mm')
 
-  //? Get Data : ประเภทกระดาษ และ การเคลือบ
+  const defaultUnit = { mm: 1, cm: 10, inch: 25.4 }
+
   useEffect(() => {
+    // //? สินค้า
+    const getProductFormDB = async () => {
+      const product = await GET_PRODUCT_CATEGORY(token)
+      const productAll = product.map(({ name }) => name)
+      dispatch(setResProductName(productAll))
+    }
+    getProductFormDB()
+
+    //? รูปแบบสินค้า
+    const getMaterialFormDB = async () => {
+      const material = await GET_MATERIAL_CATEGORY(token)
+      const materialAll = material.map(({ name }) => name)
+      dispatch(setResMaterialName(materialAll))
+    }
+    getMaterialFormDB()
+
+    //? ประเภทกระดาษ
+    const getPaperFormDB = async () => {
+      const paper = await GET_PAPER_LIST(token)
+      const paperAll = paper.map(({ name }) => name)
+      dispatch(setResPaperName(paperAll))
+    }
     getPaperFormDB()
+
+    //? การเคลือบ
+    const getEnamelFormDB = async () => {
+      const enamel = await GET_ENAMEL_LIST(token)
+      const enamelAll = enamel.map(({ enamels_name }) => enamels_name)
+      dispatch(setResEnamelName(enamelAll))
+    }
     getEnamelFormDB()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    Dieline ? dispatch(setLayout(Dieline)) : dispatch(setLayout(Dieline))
+  }, [Dieline, dispatch])
+
+  const product = (resProductName) => {
+    const dataButton = resProductName.map((response, index) => (
+      <option key={''} value={index}>
+        {response}
+      </option>
+    ))
+    return dataButton
+  }
+
+  const material = (e) => {
+    if (e.target.value === '0') {
+      const dataButton = resMaterialName.map((response, index) => (
+        <option key={''} value={index}>
+          {response}
+        </option>
+      ))
+      setMaterialName(dataButton)
+    }
+  }
+
+  const paper = (e) => {
+    if (e.target.value === '0') {
+      const dataButton = resPaperName.map((name) => (
+        <option key={''}>{name}</option>
+      ))
+      setPaperName(dataButton)
+    }
+  }
+
+  const handleChangeSize = (value, type) => {
+    switch (type) {
+      case 'width':
+        dispatch(setA(value))
+        break
+      case 'depth':
+        dispatch(setB(value))
+        break
+      case 'height':
+        dispatch(setC(value))
+        break
+      case 'flap':
+        dispatch(setF(value))
+        break
+      case 'plug':
+        dispatch(setP(value))
+        break
+      default:
+        return ''
+    }
+  }
+
+  const handleCheckUnit = (e) => {
+    let value = e.target.value,
+      pre
+
+    setPrevUnit((prevState) => {
+      pre = prevState
+      return { value }
+    }) //?  pre เก็บค่าตัวแปร value ที่รับเข้ามาก่อนหน้า
+
+    // mm
+    if (value === 'mm') {
+      if (pre === 'cm') {
+        dispatch(setUnit(value))
+      }
+      dispatch(setUnit(value))
+    }
+    // cm
+    if (value === 'cm') {
+      if (pre === 'inch') {
+        dispatch(setUnit(value))
+      }
+      dispatch(setUnit(value))
+    }
+    // in
+    if (value === 'inch') {
+      if (pre === 'cm') {
+        dispatch(setUnit(value))
+      }
+      dispatch(setUnit(value))
+    }
+  }
+
+  const selectUnit = () => (
+    <select
+      className="border rounded px-2 py-2 focus:outline-none"
+      value={unit}
+      onChange={handleCheckUnit}
+    >
+      <option value="mm">mm</option>
+      <option value="cm">cm</option>
+      <option value="inch">inch</option>
+    </select>
+  )
 
   const FX_More_One = (e) => {
     let GetClass = e.target.className
@@ -41,29 +197,6 @@ const Part2ModalBody = (props) => {
     }
   }
 
-  const getPaperFormDB = async () => {
-    const paper = await GET_PAPER_LIST()
-    const paperAll = []
-
-    paper.map((response) => {
-      const { paperList } = response
-      paperAll.push(paperList.name)
-    })
-
-    dispatch(setResPaperName(paperAll))
-  }
-
-  const getEnamelFormDB = async () => {
-    const enamel = await GET_ENAMEL_LIST()
-    const enamelAll = []
-
-    enamel.map((response) => {
-      enamelAll.push(response.enamel_name)
-    })
-
-    dispatch(setResEnamelName(enamelAll))
-  }
-
   return (
     <div className="bg-white now-set-modal-height">
       <div className="lg:p-5 p-1 m-1 lg:ml-1 lg:mr-1 bg-white">
@@ -74,30 +207,41 @@ const Part2ModalBody = (props) => {
               <label className="mt-4">สเปกสินค้า</label>
             </div>
             <div className="grid  gap-4 grid-cols-3 spec-product">
+              {/* //? เลือกสินค้า */}
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 สินค้า:
               </span>
-              <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
-                <option>เลือกสินค้า</option>
-                <option>One</option>
-                <option>Two</option>
-                <option>Three</option>
+              <select
+                className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
+                onChange={material}
+              >
+                <option selected disabled>
+                  เลือกสินค้า
+                </option>
+                {product(resProductName)}
               </select>
+              {/* //? รูปแบบสินค้า */}
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 รูปแบบสินค้า:
               </span>
-              <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
-                <option>เลือกรูปแบบสินค้า</option>
-                <option>One</option>
-                <option>Two</option>
-                <option>Three</option>
+              <select
+                className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
+                onChange={paper}
+              >
+                <option selected disabled>
+                  เลือกรูปแบบสินค้า
+                </option>
+                {materialName}
               </select>
+              {/* //? ประเภทกระดาษ */}
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 ประเภทกระดาษ:
               </span>
               <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
-                <option>เลือกประเภทกระดาษ</option>
-                {paperSelect(resPaperName)}
+                <option selected disabled>
+                  เลือกประเภทกระดาษ
+                </option>
+                {paperName}
               </select>
             </div>
           </div>
@@ -108,11 +252,7 @@ const Part2ModalBody = (props) => {
               </div>
               <div className="font-semibold lg:p-3 float-right bg-head">
                 <span className="text-white">เลือกหน่วย:</span>
-                <select className="border rounded px-2 py-2 focus:outline-none">
-                  <option>เซนติเมตร</option>
-                  <option>Two</option>
-                  <option>Three</option>
-                </select>
+                {selectUnit()}
               </div>
             </div>
             <div className="grid gap-4 lg:grid-cols-2 na-ja">
@@ -120,34 +260,49 @@ const Part2ModalBody = (props) => {
                 <div className="font-semibold">
                   <span className="text-gray-800">
                     ด้าน A
-                    <input
-                      type="text"
+                    <InputNumber
                       className="focus:outline-none border rounded px-2 py-1 input-fx"
-                      placeholder="00.00"
+                      step={1}
+                      value={`${
+                        unit === 'mm'
+                          ? (A / defaultUnit[unit]).toFixed(2)
+                          : (A / defaultUnit[unit]).toFixed(1)
+                      }`}
+                      onChange={(value) => handleChangeSize(value, 'width')}
                     />
-                    cm
+                    mm
                   </span>
                 </div>
                 <div className="font-semibold">
                   <span className="text-gray-800">
                     ด้าน B
-                    <input
-                      type="text"
+                    <InputNumber
                       className="focus:outline-none border rounded px-2 py-1 input-fx"
-                      placeholder="00.00"
+                      step={1}
+                      value={`${
+                        unit === 'mm'
+                          ? (B / defaultUnit[unit]).toFixed(2)
+                          : (B / defaultUnit[unit]).toFixed(1)
+                      }`}
+                      onChange={(value) => handleChangeSize(value, 'depth')}
                     />
-                    cm
+                    mm
                   </span>
                 </div>
                 <div className="font-semibold">
                   <span className="text-gray-800">
                     ด้าน C
-                    <input
-                      type="text"
+                    <InputNumber
                       className="focus:outline-none border rounded px-2 py-1 input-fx"
-                      placeholder="00.00"
+                      step={1}
+                      value={`${
+                        unit === 'mm'
+                          ? (C / defaultUnit[unit]).toFixed(2)
+                          : (C / defaultUnit[unit]).toFixed(1)
+                      }`}
+                      onChange={(value) => handleChangeSize(value, 'height')}
                     />
-                    cm
+                    mm
                   </span>
                 </div>
               </div>
@@ -155,10 +310,15 @@ const Part2ModalBody = (props) => {
                 <div className="font-semibold">
                   <span className="text-gray-800">
                     FLAP
-                    <input
-                      type="text"
+                    <InputNumber
                       className="focus:outline-none border rounded px-2 py-1 input-fx"
-                      placeholder="00.00"
+                      step={1}
+                      value={`${
+                        unit === 'mm'
+                          ? (F / defaultUnit[unit]).toFixed(2)
+                          : (F / defaultUnit[unit]).toFixed(1)
+                      }`}
+                      onChange={(value) => handleChangeSize(value, 'flap')}
                     />
                     %
                   </span>
@@ -166,18 +326,35 @@ const Part2ModalBody = (props) => {
                 <div className="font-semibold">
                   <span className="text-gray-800">
                     PLUG
-                    <input
-                      type="text"
+                    <InputNumber
                       className="focus:outline-none border rounded px-2 py-1 input-fx"
-                      placeholder="00.00"
+                      step={1}
+                      value={`${
+                        unit === 'mm'
+                          ? (P / defaultUnit[unit]).toFixed(2)
+                          : (P / defaultUnit[unit]).toFixed(1)
+                      }`}
+                      onChange={(value) => handleChangeSize(value, 'plug')}
                     />
-                    cm
+                    mm
                   </span>
                 </div>
               </div>
             </div>
-            <div className="rounded-sm border ml-2 mr-2 px-2 py-3 text-center total m-5 left-right">
-              ขนาดสินค้ารวม 15 x 20 x 20 cm. ขนาดสินค้าไม่เกิน A$
+            <div className="rounded-sm border ml-2 mr-2 px-2 py-3 text-center m-5 left-right">
+              {`ขนาดสินค้ารวม ${A} x ${B} ${unit} ขนาดสินค้าไม่เกิน ${
+                A * B >= 999949
+                  ? 'A0'
+                  : A * B >= 499554
+                  ? 'A1'
+                  : A * B >= 249480
+                  ? 'A2'
+                  : A * B >= 124740
+                  ? 'A3'
+                  : A * B >= 62370
+                  ? 'A4'
+                  : 'A5'
+              }`}
             </div>
           </div>
         </div>
@@ -323,10 +500,7 @@ const Part2ModalBody = (props) => {
                     <tr>
                       <td className="t1">การเคลือบ</td>
                       <td colSpan="4" className="t2">
-                        <select className="w-full border rounded py-2 focus:outline-none input-fx">
-                          <option>เลือกสินค้า</option>
-                          {enamelSelect(resEnamelName)}
-                        </select>
+                        {enamelSelect(resEnamelName)}
                       </td>
                     </tr>
                     <tr>
@@ -628,11 +802,7 @@ const Part2ModalBody = (props) => {
                 </div>
               </div>
               <div className="col-span-3 lg:col-span-2">
-                <img
-                  className="box-pic01"
-                  src="https://www.img.in.th/images/e3a0d7d949e2459292f771fa1e7581c3.png"
-                  alt="1"
-                />
+                <TUCK_END_BOXES_MAIN />
               </div>
             </div>
             <div className="border-gray-300 border rounded-sm mt-3">
@@ -794,7 +964,7 @@ const Part2ModalBody = (props) => {
           ยกเลิก
         </button>
         <button
-          onClick={() => props.GetWhenSendDoc(props.SentStateJsonOffer)}
+          onClick={() => props.GetWhenSendDoc(SentStateJsonOffer)}
           id="cancel-modal-na-ja"
           className="float-right custom-05 mt-2 inline-block hover:text-white focus:outline-none focus:text-white  hover:bg-blue-dark font-bold py-2 px-3 rounded-sm hover:bg-indigo-500 transition ease-in-out duration-300"
         >
@@ -806,14 +976,14 @@ const Part2ModalBody = (props) => {
 }
 
 const TheModalEstimate = (props) => {
+  const { SendDataValue, WhenSendDoc } = props
   const [CountDocNumber, SetCountDocNumber] = useState(
-    String(Number(props.SendDataValue.รหัสเอกสาร) + 1)
+    String(Number(SendDataValue.รหัสเอกสาร) + 1)
   )
   const [NameClient, SetNameClient] = useState('')
   const [ClientType, SetClientType] = useState('ลุกค้าเก่า')
 
-  const Digit =
-    Number(String(Number(props.SendDataValue.รหัสเอกสาร) + 1).length) - 1
+  const Digit = Number(String(Number(SendDataValue.รหัสเอกสาร) + 1).length) - 1
 
   let OurDate = new Date()
   let TheDay =
@@ -825,14 +995,14 @@ const TheModalEstimate = (props) => {
       ? OurDate.getMonth() + 1
       : '0' + String(OurDate.getMonth() + 1)
   const GetDate =
-    String(props.SendDataValue.วันที่) === ''
+    String(SendDataValue.วันที่) === ''
       ? String(TheDay + '/' + TheMonth + '/' + OurDate.getFullYear())
-      : String(props.SendDataValue.วันที่)
+      : String(SendDataValue.วันที่)
 
   const GetTime = String(
     OurDate.getHours() + ':' + OurDate.getMinutes() + ' น.'
   )
-  const OurSale = props.SendDataValue.ผู้ขอเอกสาร
+  const OurSale = SendDataValue.ผู้ขอเอกสาร
 
   useEffect(() => {
     let GetLastStr = '00000' + String(CountDocNumber)
@@ -890,7 +1060,7 @@ const TheModalEstimate = (props) => {
                   {OurSale}
                   <br />
                   <label className="ball-sale">
-                    {props.SendDataValue.ฝ่ายผู้ขอเอกสาร}
+                    {SendDataValue.ฝ่ายผู้ขอเอกสาร}
                   </label>
                 </div>
               </div>
@@ -912,7 +1082,7 @@ const TheModalEstimate = (props) => {
                 <div className="font-semibold p-2">
                   <span className="text-gray-800 label-ft">ลูกค้า:</span>
                   <input
-                    defaultValue={props.SendDataValue.ลูกค้า}
+                    defaultValue={SendDataValue.ลูกค้า}
                     onChange={(e) => SetNameClient(e.target.value)}
                     type="text"
                     className="lg:w-5/6 w-4/6 float-right focus:outline-none border rounded px-2 py-1 input-fx"
@@ -988,7 +1158,7 @@ const TheModalEstimate = (props) => {
             SentStateJsonOffer={[
               {
                 วันที่: GetDate,
-                รหัสเอกสาร: String(Number(props.SendDataValue.รหัสเอกสาร) + 1),
+                รหัสเอกสาร: String(Number(SendDataValue.รหัสเอกสาร) + 1),
                 รายละเอียด: '',
                 ลูกค้า: NameClient,
                 สถานะลูกค้า: ClientType,
@@ -996,7 +1166,7 @@ const TheModalEstimate = (props) => {
                 ผู้ออกเอกสาร: OurSale,
               },
             ]}
-            GetWhenSendDoc={props.WhenSendDoc}
+            GetWhenSendDoc={WhenSendDoc}
           />
         </div>
       </div>
@@ -1005,33 +1175,34 @@ const TheModalEstimate = (props) => {
 }
 
 export default function Estimates(props) {
+  const { SendModeEditer, SentJsonDataToModal, SentFunctionGetDoc } = props
   const [StatusModalEstimate, SetStatusModalEstimate] = useState(false)
 
   let TheEdit =
-    Number(props.SendModeEditer[0].length) === 1
+    Number(SendModeEditer[0].length) === 1
       ? [
           {
-            วันที่: props.SendModeEditer[0][0].วันที่,
-            รหัสเอกสาร: Number(props.SendModeEditer[0][0].id) - 1,
-            รายละเอียด: props.SendModeEditer[0][0].รายละเอียด,
-            ลูกค้า: props.SendModeEditer[0][0].ลูกค้า,
-            สถานะลูกค้า: props.SendModeEditer[0][0].สถานะลูกค้า,
-            จำนวนงาน: props.SendModeEditer[0][0].จำนวนงาน,
-            ผู้ขอเอกสาร: String(props.SendModeEditer[0][0].ผู้ขอเอกสาร),
-            ฝ่ายผู้ขอเอกสาร: props.SendModeEditer[0][0].ฝ่ายผู้ขอเอกสาร,
-            ผู้เสนอราคา: props.SendModeEditer[0][0].ผู้เสนอราคาม,
-            ฝ่ายผู้เสนอเอกสาร: props.SendModeEditer[0][0].ฝ่ายผู้เสนอเอกสาร,
+            วันที่: SendModeEditer[0][0].วันที่,
+            รหัสเอกสาร: Number(SendModeEditer[0][0].id) - 1,
+            รายละเอียด: SendModeEditer[0][0].รายละเอียด,
+            ลูกค้า: SendModeEditer[0][0].ลูกค้า,
+            สถานะลูกค้า: SendModeEditer[0][0].สถานะลูกค้า,
+            จำนวนงาน: SendModeEditer[0][0].จำนวนงาน,
+            ผู้ขอเอกสาร: String(SendModeEditer[0][0].ผู้ขอเอกสาร),
+            ฝ่ายผู้ขอเอกสาร: SendModeEditer[0][0].ฝ่ายผู้ขอเอกสาร,
+            ผู้เสนอราคา: SendModeEditer[0][0].ผู้เสนอราคาม,
+            ฝ่ายผู้เสนอเอกสาร: SendModeEditer[0][0].ฝ่ายผู้เสนอเอกสาร,
           },
         ]
       : [
           {
             วันที่: '',
-            รหัสเอกสาร: props.SentJsonDataToModal[0],
+            รหัสเอกสาร: SentJsonDataToModal[0],
             รายละเอียด: '',
             ลูกค้า: '',
             สถานะลูกค้า: '',
             จำนวนงาน: '',
-            ผู้ขอเอกสาร: props.SentJsonDataToModal[1],
+            ผู้ขอเอกสาร: SentJsonDataToModal[1],
             ฝ่ายผู้ขอเอกสาร: 'ฝ่ายขาย',
             ผู้เสนอราคา: '',
             ฝ่ายผู้เสนอเอกสาร: '',
@@ -1055,10 +1226,10 @@ export default function Estimates(props) {
 
   return (
     <>
-      {StatusModalEstimate || Number(props.SendModeEditer[0].length) === 1 ? (
+      {StatusModalEstimate || Number(SendModeEditer[0].length) === 1 ? (
         <TheModalEstimate
-          WhenSendDoc={props.SentFunctionGetDoc}
-          SendFxExitEdit={props.SendModeEditer[1]}
+          WhenSendDoc={SentFunctionGetDoc}
+          SendFxExitEdit={SendModeEditer[1]}
           SendDataValue={TheEdit[0]}
           SendFunc={WhenStayInModal}
         />

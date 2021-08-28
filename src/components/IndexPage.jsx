@@ -1,146 +1,33 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
-import { setDocOffer } from '../store/reducers/DocParam'
-import { API_GET_PROCESS } from '../../pages/api/GetData'
-
+import { setDocOffer } from '../store/reducers/docParam.reducer'
+import PostData from '../../process.json'
 import axios from 'axios'
-import DataTable from './DataTable'
-import Estimates from './Estimates'
+import DataTable from './dataTable'
+import Estimates from './estimates'
 
 export default function IndexPage() {
   const router = useRouter()
   const dispatch = useDispatch()
-  const ApiProcess = 'http://localhost:4200/process/'
 
   const [ProDoc, SetProDoc] = useState([{}])
-  const [okDoc, setOKDoc] = useState([{}])
+  const [OkDoc, SetOkDoc] = useState([{}])
   const [GetThisResult, SetGetThisResult] = useState(ProDoc)
   const [OldResult, SetOldResult] = useState(ProDoc)
-  const [docProcess, setDocProcess] = useState(true)
-  const [editOldLeft, setEditOldLeft] = useState([])
-  const [getOption, setGetOption] = useState(['กำลังโหลดข้อมูล...'])
-  const [ChangeResult, SetChangeResult] = useState("");
-  const [, setHandingAPI] = useState()
+  const [DocProcess, SetDocProcess] = useState(true)
+  const [EditOldLeft, SetEditOldLeft] = useState([])
+  const [GetOption, SetGetOption] = useState(['กำลังโหลดข้อมูล...'])
+  const [ChangeResult, SetChangeResult] = useState('')
 
   useEffect(() => {
-    const GetApi = async () => {
-      const result = await API_GET_PROCESS()
-      if (result) {
-        if (docProcess) {
-          const resultProcess = result.map((ValueProCess, index) => {
-            const Digit = String(ValueProCess.id).length - 1
-            let GetLastStr = '00000' + String(ValueProCess.id)
-
-            const MakeJsonProCess = {
-              วันที่: (
-                <span
-                  onClick={() => {
-                    setEditOldLeft([result[index]])
-                  }}
-                >
-                  {ValueProCess.วันที่}
-                </span>
-              ),
-              รหัสเอกสาร: GetLastStr.substr(
-                GetLastStr.length - Number(14 - Digit)
-              ),
-              รายละเอียด: ValueProCess.รายละเอียด,
-              ลูกค้า: ValueProCess.ลูกค้า,
-              สถานะลูกค้า: ValueProCess.สถานะลูกค้า,
-              จำนวนงาน: ValueProCess.จำนวนงาน,
-              ผู้ออกเอกสาร: (
-                <span>
-                  <label className="mr-2 name-sale-ft1">
-                    {ValueProCess.ผู้ขอเอกสาร}
-                  </label>
-                  <label className="ball-sale">
-                    {ValueProCess.ฝ่ายผู้ขอเอกสาร}
-                  </label>
-                </span>
-              ),
-              Action: <button className="btn-process-offer">เสนอราคา</button>,
-            }
-            return MakeJsonProCess
-          })
-          SetProDoc(resultProcess)
-          SetGetThisResult(resultProcess)
-          SetOldResult(resultProcess)
-        } else {
-          const resultOkcess = result.map((ValueProCess, index) => {
-            const Digit = String(ValueProCess.id).length - 1
-            let GetLastStr = '00000' + String(ValueProCess.id)
-
-            const MakeJsonProCess = {
-              วันที่: (
-                <span
-                  onClick={() => {
-                    setEditOldLeft([result[index]])
-                  }}
-                >
-                  {ValueProCess.วันที่}
-                </span>
-              ),
-              รหัสเอกสาร: GetLastStr.substr(
-                GetLastStr.length - Number(14 - Digit)
-              ),
-              รายละเอียด: ValueProCess.รายละเอียด,
-              ลูกค้า: ValueProCess.ลูกค้า,
-              สถานะลูกค้า: ValueProCess.สถานะลูกค้า,
-              จำนวนงาน: ValueProCess.จำนวนงาน,
-              ผู้ขอเอกสาร: (
-                <span>
-                  <label className="mr-2 name-sale-ft1">
-                    {ValueProCess.ผู้ขอเอกสาร}
-                  </label>
-                  <br />
-                  <label className="ball-sale">
-                    {ValueProCess.ฝ่ายผู้ขอเอกสาร}
-                  </label>
-                </span>
-              ),
-              ผู้เสนอราคา: (
-                <span>
-                  <label className="mr-2 name-sale-ft1">
-                    {ValueProCess.ผู้เสนอราคา}
-                  </label>
-                  <br />
-                  <label className="ball-ceo">
-                    {ValueProCess.ฝ่ายผู้เสนอราคา}
-                  </label>
-                </span>
-              ),
-              Action: (
-                <span>
-                  <button className="btn-process-open">เปิด</button>
-                  <button className="btn-process-load"></button>
-                  <button className="btn-process-share"></button>
-                </span>
-              ),
-            }
-            return MakeJsonProCess
-          })
-          setOKDoc(resultOkcess)
-          SetGetThisResult(resultOkcess)
-          SetOldResult(resultOkcess)
-        }
-      }
-    }
-
-    setHandingAPI((prevState) => {
-      prevState = GetApi(docProcess)
-      return prevState
-    })
-
-    return () => {
-      setHandingAPI(GetApi(docProcess))
-    }
-  }, [docProcess])
+    GetApi(DocProcess)
+  }, [DocProcess])
 
   useEffect(() => {
-    docProcess ? SetGetThisResult(ProDoc) : SetGetThisResult(okDoc)
-    docProcess ? SetOldResult(ProDoc) : SetOldResult(okDoc)
-  }, [ProDoc, docProcess, okDoc])
+    DocProcess ? SetGetThisResult(ProDoc) : SetGetThisResult(OkDoc)
+    DocProcess ? SetOldResult(ProDoc) : SetOldResult(OkDoc)
+  }, [DocProcess, OkDoc, ProDoc])
 
   useEffect(() => {
     let TdChild = document.querySelectorAll('.ft1-page tr')[1].firstElementChild
@@ -152,24 +39,129 @@ export default function IndexPage() {
     }
   })
 
+  const GetApi = async (StatApi) => {
+    const result = PostData
+
+    if (result) {
+      if (StatApi) {
+        const resultProcess = result.map((ValueProCess, index) => {
+          const Digit = String(ValueProCess.id).length - 1
+          let GetLastStr = '00000' + String(ValueProCess.id)
+          const MakeJsonProCess = {
+            วันที่: (
+              <span
+                onClick={() => {
+                  SetEditOldLeft([result[index]])
+                }}
+              >
+                {ValueProCess.วันที่}
+              </span>
+            ),
+            รหัสเอกสาร: GetLastStr.substr(
+              GetLastStr.length - Number(14 - Digit)
+            ),
+            รายละเอียด: ValueProCess.รายละเอียด,
+            ลูกค้า: ValueProCess.ลูกค้า,
+            สถานะลูกค้า: ValueProCess.สถานะลูกค้า,
+            จำนวนงาน: ValueProCess.จำนวนงาน,
+            ผู้ออกเอกสาร: (
+              <span>
+                <label className="mr-2 name-sale-ft1">
+                  {ValueProCess.ผู้ขอเอกสาร}
+                </label>
+                <label className="ball-sale">
+                  {ValueProCess.ฝ่ายผู้ขอเอกสาร}
+                </label>
+              </span>
+            ),
+            Action: <button className="btn-process-offer">เสนอราคา</button>,
+          }
+          return MakeJsonProCess
+        })
+        SetProDoc(resultProcess)
+        SetGetThisResult(resultProcess)
+        SetOldResult(resultProcess)
+      } else {
+        const resultOkcess = result.map((ValueProCess, index) => {
+          const Digit = String(ValueProCess.id).length - 1
+          let GetLastStr = '00000' + String(ValueProCess.id)
+
+          const MakeJsonProCess = {
+            วันที่: (
+              <span
+                onClick={() => {
+                  SetEditOldLeft([result[index]])
+                }}
+              >
+                {ValueProCess.วันที่}
+              </span>
+            ),
+            รหัสเอกสาร: GetLastStr.substr(
+              GetLastStr.length - Number(14 - Digit)
+            ),
+            รายละเอียด: ValueProCess.รายละเอียด,
+            ลูกค้า: ValueProCess.ลูกค้า,
+            สถานะลูกค้า: ValueProCess.สถานะลูกค้า,
+            จำนวนงาน: ValueProCess.จำนวนงาน,
+            ผู้ขอเอกสาร: (
+              <span>
+                <label className="mr-2 name-sale-ft1">
+                  {ValueProCess.ผู้ขอเอกสาร}
+                </label>
+                <br />
+                <label className="ball-sale">
+                  {ValueProCess.ฝ่ายผู้ขอเอกสาร}
+                </label>
+              </span>
+            ),
+            ผู้เสนอราคา: (
+              <span>
+                <label className="mr-2 name-sale-ft1">
+                  {ValueProCess.ผู้เสนอราคา}
+                </label>
+                <br />
+                <label className="ball-ceo">
+                  {ValueProCess.ฝ่ายผู้เสนอราคา}
+                </label>
+              </span>
+            ),
+            Action: (
+              <span>
+                <button className="btn-process-open">เปิด</button>
+                <button className="btn-process-load"></button>
+                <button className="btn-process-share"></button>
+              </span>
+            ),
+          }
+          return MakeJsonProCess
+        })
+        SetOkDoc(resultOkcess)
+        SetGetThisResult(resultOkcess)
+        SetOldResult(resultOkcess)
+      }
+    }
+  }
+
   const GetNewDoc = (GetDoc) => {
-    if (Number(editOldLeft.length) === 0) {
+    if (Number(EditOldLeft.length) === 0) {
       PostApi(GetDoc)
     } else {
       axios
-        .put(ApiProcess + GetDoc[0].รหัสเอกสาร, {
+        .put('http://localhost:4200/process' + GetDoc[0].รหัสเอกสาร, {
           วันที่: GetDoc[0].วันที่,
           ลูกค้า: GetDoc[0].ลูกค้า,
           สถานะลูกค้า: GetDoc[0].สถานะลูกค้า,
           ผู้ขอเอกสาร: GetDoc[0].ผู้ออกเอกสาร,
         })
-        .then(() => setHandingAPI(docProcess))
+        .then(() => {
+          GetApi(DocProcess)
+        })
     }
   }
 
   const PostApi = (GetDoc) => {
     axios
-      .post(ApiProcess, {
+      .post('http://localhost:4200/process', {
         วันที่: GetDoc[0].วันที่,
         id: GetDoc[0].รหัสเอกสาร,
         รายละเอียด: 'กล่องกระดาษแข็ง กล่องผ่าเสียบ ก้นเสียบ',
@@ -181,13 +173,16 @@ export default function IndexPage() {
         ผู้เสนอราคา: 'เกี๊ยวน้ำเปล่า แต่ไม่เค็ม',
         ฝ่ายผู้เสนอราคา: 'CEO',
       })
-      .then(() => setHandingAPI(docProcess))
+      .then(() => {
+        GetApi(DocProcess)
+      })
   }
 
   const ClickMyOffer = (e) => {
     let PositionMyOffer = Array.from(
       document.getElementsByClassName('btn-process-offer')
     ).indexOf(e.target)
+
     if (Number(PositionMyOffer) >= 0) {
       let PositionInner =
         document.querySelectorAll('.ft1-page tr')[PositionMyOffer + 1].innerText
@@ -207,14 +202,14 @@ export default function IndexPage() {
       })
 
       router.push({
-        pathname: '/utils/offer',
+        pathname: '/quotation/offer',
         query: 'query=' + DocCode,
       })
 
       dispatch(
         setDocOffer([
           {
-            วันที่: String(Filter[0].วันที่),
+            วันที่: Filter[0].วันที่,
             รหัสเอกสาร: Filter[0].รหัสเอกสาร,
             รายละเอียด: Filter[0].รายละเอียด,
             ลูกค้า: Filter[0].ลูกค้า,
@@ -234,7 +229,7 @@ export default function IndexPage() {
       String(GetExitEdit) === 'font-closed' ||
       String(GetExitEdit) === 'cancel-modal-na-ja'
     ) {
-      setEditOldLeft([])
+      SetEditOldLeft([])
     }
   }
 
@@ -242,8 +237,7 @@ export default function IndexPage() {
     const TagOption = OldResult.map((theValue) => {
       return theValue.วันที่.props.children
     })
-
-    setGetOption(TagOption)
+    SetGetOption(TagOption)
   }
 
   const FX_Click_Read = () => {
@@ -309,13 +303,23 @@ export default function IndexPage() {
     document.querySelectorAll('.receive-input')[0].value = null
     document.querySelectorAll('.Set-Zero')[0].selectedIndex = 0
   }
-  
+
+  const LeftClick = () => {
+    SetDocProcess(true)
+    GetApi(true)
+  }
+
+  const RightClick = () => {
+    SetDocProcess(false)
+    GetApi(false)
+  }
+
   return (
     <>
       <div className="container mx-auto pb-10 pt-10">
         <label className="head-the-receive ml-3 md:ml-0">เอกสารขอราคา</label>
         <Estimates
-          SendModeEditer={[editOldLeft, ExitFormEdit]}
+          SendModeEditer={[EditOldLeft, ExitFormEdit]}
           SentJsonDataToModal={[ProDoc.length, 'นลิมรัตน์']}
           SentFunctionGetDoc={GetNewDoc}
         />
@@ -323,21 +327,21 @@ export default function IndexPage() {
       <div className="grid grid-cols-12 gap-0">
         <div
           className={
-            docProcess
+            DocProcess
               ? 'col-span-12 text-center md:col-span-2 custom-30 active'
               : 'col-span-12 text-center md:col-span-2 custom-30'
           }
-          onClick={() => setDocProcess(true)}
+          onClick={LeftClick}
         >
           เอกสารรอดำเนินการ
         </div>
         <div
           className={
-            docProcess
+            DocProcess
               ? 'col-span-12 text-center md:col-span-2 custom-30'
               : 'col-span-12 text-center md:col-span-2 custom-30 active'
           }
-          onClick={() => setDocProcess(false)}
+          onClick={RightClick}
         >
           เอกสารแล้วเสร็จ
         </div>
@@ -363,7 +367,7 @@ export default function IndexPage() {
                 onChange={(e) => SetChangeResult(e.target.value)}
               >
                 <option value="">ทั้งหมด</option>
-                {getOption.map((theValue, index) => {
+                {GetOption.map((theValue, index) => {
                   return (
                     <option key={index} value={String(theValue)}>
                       {String(theValue)}
@@ -387,12 +391,12 @@ export default function IndexPage() {
         </div>
         <div className="mt-5 ft1-page" onClick={ClickMyOffer}>
           {
-            <div className={docProcess ? 'block' : 'hidden'}>
+            <div className={DocProcess ? 'block' : 'hidden'}>
               <DataTable obj={GetThisResult} dataInOnePage={10} />
             </div>
           }
           {
-            <div className={!docProcess ? 'block' : 'hidden'}>
+            <div className={!DocProcess ? 'block' : 'hidden'}>
               <DataTable obj={GetThisResult} dataInOnePage={10} />
             </div>
           }

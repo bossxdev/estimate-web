@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware } from 'redux'
 import { createWrapper } from 'next-redux-wrapper'
 import thunkMiddleware from 'redux-thunk'
-import rootReducer from './reducers'
+import rootReducer from './reducers/root'
 
 const bindMiddleware = (middleware) => {
   if (process.env.NODE_ENV !== 'production') {
@@ -19,7 +19,7 @@ const makeStore = ({ isServer }) => {
     const storage = require('redux-persist/lib/storage').default
     const persistConfig = {
       key: 'app',
-      whitelist: ['path'],
+      whitelist: ['auth', 'path'],
       storage,
     }
     const persistedReducer = persistReducer(persistConfig, rootReducer)

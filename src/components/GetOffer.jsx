@@ -1,21 +1,49 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useSelector, useDispatch } from 'react-redux'
-import { setDocOffer } from '../store/reducers/docParam'
-
+import { InputNumber } from 'antd'
+import { setDocOffer } from '../store/reducers/docParam.reducer'
 import {
+  setResProductName,
+  setResMaterialName,
   setResPaperName,
   setResEnamelName,
-} from '../store/reducers/Main'
-
-import { GET_PAPER_LIST, GET_ENAMEL_LIST } from '../../pages/api/GetData'
-import { paperSelect, enamelSelect } from '../../utils/HandingData'
-
-import DataTable from './DataTable'
+  setResPrinterName,
+} from '../store/reducers/main.reducer'
+import {
+  setA,
+  setB,
+  setC,
+  setF,
+  setP,
+  setUnit,
+  setLayout,
+} from '../store/reducers/boxes.reducer'
+import {
+  GET_PRODUCT_CATEGORY,
+  GET_MATERIAL_CATEGORY,
+  GET_PAPER_LIST,
+  GET_ENAMEL_LIST,
+  GET_PRINTER_NAME,
+} from '../../pages/api/getdata.api'
+import { paperSelect, enamelSelect, printerSelect } from '../utils/handingData'
+import TUCK_END_BOXES_MAIN from './boxes/tuckEndBoxes/main'
+import DataTable from './dataTable'
 
 export default function GetOffer() {
   const router = useRouter()
   const dispatch = useDispatch()
+
+  const {
+    resProductName,
+    resMaterialName,
+    resPaperName,
+    resEnamelName,
+    resPrinterName,
+  } = useSelector((state) => state.main)
+  const { docOffer } = useSelector((state) => state.docParam)
+  const { token } = useSelector((state) => state.auth)
+  const { A, B, C, F, P, unit } = useSelector((state) => state.boxes)
 
   const [ClickLay, SetClickLay] = useState(false)
   const [OutSide, SetOutSide] = useState(true)
@@ -23,10 +51,11 @@ export default function GetOffer() {
   const [OpenMoreDetail, SetMoreDetail] = useState(false)
   const [Foiling, SetFoiling] = useState(false)
   const [UVPrinting, SetUVPrinting] = useState(false)
-  const [GetDetailBox, SetGetDetailBox] = useState('')
+  const [materialName, setMaterialName] = useState()
+  const [paperName, setPaperName] = useState()
+  const [, setPrevUnit] = useState('mm')
 
-  const { docOffer } = useSelector((state) => state.docParam)
-  const { resPaperName, resEnamelName } = useSelector((state) => state.main)
+  const defaultUnit = { mm: 1, cm: 10, inch: 25.4 }
 
   const arrayOfObjects = [
     {
@@ -180,30 +209,157 @@ export default function GetOffer() {
 
   useEffect(
     () =>
-      docOffer[0].รายละเอียด
-        ? SetGetDetailBox(docOffer[0].รายละเอียด.split(' '))
-        : '',
-    [docOffer]
-  )
-
-  useEffect(
-    () =>
       ClickLay
         ? window.scrollTo(0, document.body.scrollHeight)
         : window.scrollTo(0, document.body.scrollTop),
     [ClickLay]
   )
 
-  //? Get Data : ประเภทกระดาษ และ การเคลือบ
   useEffect(() => {
+    // //? รูปแบบสินค้า
+    const getProductFormDB = async () => {
+      const product = await GET_PRODUCT_CATEGORY(token)
+      const productAll = product.map(({ name }) => name)
+      dispatch(setResProductName(productAll))
+    }
+    getProductFormDB()
+
+    //? รูปแบบสินค้า
+    const getMaterialFormDB = async () => {
+      const material = await GET_MATERIAL_CATEGORY(token)
+      const materialAll = material.map(({ name }) => name)
+      dispatch(setResMaterialName(materialAll))
+    }
+    getMaterialFormDB()
+
+    //? ประเภทกระดาษ
+    const getPaperFormDB = async () => {
+      const paper = await GET_PAPER_LIST(token)
+      const paperAll = paper.map(({ name }) => name)
+      dispatch(setResPaperName(paperAll))
+    }
     getPaperFormDB()
+
+    //? การเคลือบ
+    const getEnamelFormDB = async () => {
+      const enamel = await GET_ENAMEL_LIST(token)
+      const enamelAll = enamel.map(({ enamels_name }) => enamels_name)
+      dispatch(setResEnamelName(enamelAll))
+    }
     getEnamelFormDB()
+
+    //? เครื่องพิมพ์
+    const getPrinterFormDB = async () => {
+      const printer = await GET_PRINTER_NAME(token)
+      const printerAll = printer.map(({ name }) => name)
+      dispatch(setResPrinterName(printerAll))
+    }
+    getPrinterFormDB()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    Dieline ? dispatch(setLayout(Dieline)) : dispatch(setLayout(Dieline))
+  }, [Dieline, dispatch])
+
+  const product = (resProductName) => {
+    const dataButton = resProductName.map((response, index) => (
+      <option key={''} value={index}>
+        {response}
+      </option>
+    ))
+    return dataButton
+  }
+
+  const material = (e) => {
+    if (e.target.value === '0') {
+      const dataButton = resMaterialName.map((response, index) => (
+        <option key={''} value={index}>
+          {response}
+        </option>
+      ))
+      setMaterialName(dataButton)
+    }
+  }
+
+  const paper = (e) => {
+    if (e.target.value === '0') {
+      const dataButton = resPaperName.map((name) => (
+        <option key={''}>{name}</option>
+      ))
+      setPaperName(dataButton)
+    }
+  }
+
+  const handleChangeSize = (value, type) => {
+    switch (type) {
+      case 'width':
+        dispatch(setA(value))
+        break
+      case 'depth':
+        dispatch(setB(value))
+        break
+      case 'height':
+        dispatch(setC(value))
+        break
+      case 'flap':
+        dispatch(setF(value))
+        break
+      case 'plug':
+        dispatch(setP(value))
+        break
+      default:
+        return ''
+    }
+  }
+
+  const handleCheckUnit = (e) => {
+    let value = e.target.value,
+      pre
+
+    setPrevUnit((prevState) => {
+      pre = prevState
+      return { value }
+    }) //?  pre เก็บค่าตัวแปร value ที่รับเข้ามาก่อนหน้า
+
+    // mm
+    if (value === 'mm') {
+      if (pre === 'cm') {
+        dispatch(setUnit(value))
+      }
+      dispatch(setUnit(value))
+    }
+    // cm
+    if (value === 'cm') {
+      if (pre === 'inch') {
+        dispatch(setUnit(value))
+      }
+      dispatch(setUnit(value))
+    }
+    // in
+    if (value === 'inch') {
+      if (pre === 'cm') {
+        dispatch(setUnit(value))
+      }
+      dispatch(setUnit(value))
+    }
+  }
+
+  const selectUnit = () => (
+    <select
+      className="border rounded px-2 py-2 focus:outline-none"
+      value={unit}
+      onChange={handleCheckUnit}
+    >
+      <option value="mm">mm</option>
+      <option value="cm">cm</option>
+      <option value="inch">inch</option>
+    </select>
+  )
+
   const SentCall = () => {
     router.push({
-      pathname: '/utils/callpage',
+      pathname: '/quotation/callpage',
       query: 'doc_code=' + docOffer[0].รหัสเอกสาร,
     })
 
@@ -246,29 +402,6 @@ export default function GetOffer() {
     }
   }
 
-  const getPaperFormDB = async () => {
-    const paper = await GET_PAPER_LIST()
-    const paperAll = []
-
-    paper.map((response) => {
-      const { paperList } = response
-      paperAll.push(paperList.name)
-    })
-
-    dispatch(setResPaperName(paperAll))
-  }
-
-  const getEnamelFormDB = async () => {
-    const enamel = await GET_ENAMEL_LIST()
-    const enamelAll = []
-
-    enamel.map((response) => {
-      enamelAll.push(response.enamel_name)
-    })
-
-    dispatch(setResEnamelName(enamelAll))
-  }
-
   return (
     <div className="offer-page">
       <div className="lg:container lg:mx-auto lg:px-4 bg-out">
@@ -309,16 +442,12 @@ export default function GetOffer() {
                   <label>
                     Status:{' '}
                     <span>
-                      <button className="New">
-                        {docOffer[0].สถานะลูกค้า}
-                      </button>
+                      <button className="New">{docOffer[0].สถานะลูกค้า}</button>
                       <button className="Off-line">Offline</button>
                       <button className="face-book">
                         {docOffer[0].ลูกค้า}
                       </button>
-                      <button className="line">
-                        {docOffer[0].ลูกค้า}
-                      </button>
+                      <button className="line">{docOffer[0].ลูกค้า}</button>
                     </span>
                   </label>
                   <br />
@@ -421,28 +550,41 @@ export default function GetOffer() {
                   <label className="mt-4">สเปกสินค้า</label>
                 </div>
                 <div className="grid  gap-4 grid-cols-3 spec-product">
+                  {/* //? เลือกสินค้า */}
                   <span className="col-span-1 text-gray-800 text-look-product-show">
                     สินค้า:
                   </span>
-                  <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
-                    <option>เลือกสินค้า</option>
-                    {enamelSelect(resEnamelName)}
+                  <select
+                    className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
+                    onChange={material}
+                  >
+                    <option selected disabled>
+                      เลือกสินค้า
+                    </option>
+                    {product(resProductName)}
                   </select>
+                  {/* //? รูปแบบสินค้า */}
                   <span className="col-span-1 text-gray-800 text-look-product-show">
                     รูปแบบสินค้า:
                   </span>
-                  <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
-                    <option>เลือกรูปแบบสินค้า</option>
-                    <option>One</option>
-                    <option>Two</option>
-                    <option>Three</option>
+                  <select
+                    className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
+                    onChange={paper}
+                  >
+                    <option selected disabled>
+                      เลือกรูปแบบสินค้า
+                    </option>
+                    {materialName}
                   </select>
+                  {/* //? ประเภทกระดาษ */}
                   <span className="col-span-1 text-gray-800 text-look-product-show">
                     ประเภทกระดาษ:
                   </span>
                   <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
-                    <option>เลือกประเภทกระดาษ</option>
-                    {paperSelect(resPaperName)}
+                    <option selected disabled>
+                      เลือกประเภทกระดาษ
+                    </option>
+                    {paperName}
                   </select>
                 </div>
               </div>
@@ -515,9 +657,7 @@ export default function GetOffer() {
                   <div className="col-span-4 add-bt-top add-top">
                     <input
                       onClick={() =>
-                        UVPrinting
-                          ? SetUVPrinting(false)
-                          : SetUVPrinting(true)
+                        UVPrinting ? SetUVPrinting(false) : SetUVPrinting(true)
                       }
                       type="checkbox"
                       className="mb-1 form-checkbox h-5 w-5 text-gray-600 ml-5 mr-2 rounded-full check-na"
@@ -573,9 +713,7 @@ export default function GetOffer() {
                     <div className="bg-head">
                       <div className="float-right lg:pt-4 bg-head">
                         <button
-                          onClick={() =>
-                            OutSide ? null : SetOutSide(true)
-                          }
+                          onClick={() => (OutSide ? null : SetOutSide(true))}
                           className={
                             OutSide
                               ? 'bg-green-300 custom-17 active'
@@ -585,9 +723,7 @@ export default function GetOffer() {
                           ด้านนอก
                         </button>
                         <button
-                          onClick={() =>
-                            OutSide ? SetOutSide(false) : null
-                          }
+                          onClick={() => (OutSide ? SetOutSide(false) : null)}
                           className={OutSide ? 'custom-18' : 'custom-18 active'}
                         >
                           ด้านใน
@@ -601,10 +737,7 @@ export default function GetOffer() {
                     <tr>
                       <td className="t1">การเคลือบ</td>
                       <td colSpan="4" className="t2">
-                        <select className="w-full border rounded py-2 focus:outline-none input-fx">
-                          <option>เลือกสินค้า</option>
-                          {enamelSelect(resEnamelName)}
-                        </select>
+                        {enamelSelect(resEnamelName)}
                       </td>
                     </tr>
                     <tr>
@@ -635,9 +768,7 @@ export default function GetOffer() {
                           <div className="custom-20 col-span-1">
                             <input
                               onClick={() =>
-                                Foiling
-                                  ? SetFoiling(false)
-                                  : SetFoiling(true)
+                                Foiling ? SetFoiling(false) : SetFoiling(true)
                               }
                               type="checkbox"
                               className="form-checkbox h-5 w-5 text-gray-600 ml-5 mr-2 rounded-full check-na form-checkbox-02"
@@ -647,9 +778,7 @@ export default function GetOffer() {
                           <div className="custom-20 col-span-1">
                             <input
                               onClick={() =>
-                                Foiling
-                                  ? SetFoiling(false)
-                                  : SetFoiling(true)
+                                Foiling ? SetFoiling(false) : SetFoiling(true)
                               }
                               type="checkbox"
                               className="form-checkbox h-5 w-5 text-gray-600 ml-5 mr-2 rounded-full check-na form-checkbox-02"
@@ -659,9 +788,7 @@ export default function GetOffer() {
                           <div className="custom-20 col-span-1">
                             <input
                               onClick={() =>
-                                Foiling
-                                  ? SetFoiling(false)
-                                  : SetFoiling(true)
+                                Foiling ? SetFoiling(false) : SetFoiling(true)
                               }
                               type="checkbox"
                               className="form-checkbox h-5 w-5 text-gray-600 ml-5 mr-2 rounded-full check-na form-checkbox-02"
@@ -671,9 +798,7 @@ export default function GetOffer() {
                           <div className="custom-22 col-span-1 lg:col-span-2">
                             <input
                               onClick={() =>
-                                Foiling
-                                  ? SetFoiling(false)
-                                  : SetFoiling(true)
+                                Foiling ? SetFoiling(false) : SetFoiling(true)
                               }
                               type="checkbox"
                               className="form-checkbox h-5 w-5 text-gray-600 ml-5 mr-2 rounded-full check-na form-checkbox-02"
@@ -905,11 +1030,7 @@ export default function GetOffer() {
                   </div>
                   <div className="font-semibold lg:p-3 float-right bg-head">
                     <span className="text-white">เลือกหน่วย:</span>
-                    <select className="border rounded px-2 py-2 focus:outline-none">
-                      <option>เซนติเมตร</option>
-                      <option>Two</option>
-                      <option>Three</option>
-                    </select>
+                    {selectUnit()}
                   </div>
                 </div>
                 <div className="grid gap-4 lg:grid-cols-2 na-ja">
@@ -917,34 +1038,51 @@ export default function GetOffer() {
                     <div className="font-semibold">
                       <span className="text-gray-800">
                         ด้าน A
-                        <input
-                          type="text"
+                        <InputNumber
                           className="focus:outline-none border rounded px-2 py-1 input-fx"
-                          placeholder="00.00"
+                          step={1}
+                          value={`${
+                            unit === 'mm'
+                              ? (A / defaultUnit[unit]).toFixed(2)
+                              : (A / defaultUnit[unit]).toFixed(1)
+                          }`}
+                          onChange={(value) => handleChangeSize(value, 'width')}
                         />
-                        cm
+                        mm
                       </span>
                     </div>
                     <div className="font-semibold">
                       <span className="text-gray-800">
                         ด้าน B
-                        <input
-                          type="text"
+                        <InputNumber
                           className="focus:outline-none border rounded px-2 py-1 input-fx"
-                          placeholder="00.00"
+                          step={1}
+                          value={`${
+                            unit === 'mm'
+                              ? (B / defaultUnit[unit]).toFixed(2)
+                              : (B / defaultUnit[unit]).toFixed(1)
+                          }`}
+                          onChange={(value) => handleChangeSize(value, 'depth')}
                         />
-                        cm
+                        mm
                       </span>
                     </div>
                     <div className="font-semibold">
                       <span className="text-gray-800">
                         ด้าน C
-                        <input
-                          type="text"
+                        <InputNumber
                           className="focus:outline-none border rounded px-2 py-1 input-fx"
-                          placeholder="00.00"
+                          step={1}
+                          value={`${
+                            unit === 'mm'
+                              ? (C / defaultUnit[unit]).toFixed(2)
+                              : (C / defaultUnit[unit]).toFixed(1)
+                          }`}
+                          onChange={(value) =>
+                            handleChangeSize(value, 'height')
+                          }
                         />
-                        cm
+                        mm
                       </span>
                     </div>
                   </div>
@@ -952,10 +1090,15 @@ export default function GetOffer() {
                     <div className="font-semibold">
                       <span className="text-gray-800">
                         FLAP
-                        <input
-                          type="text"
+                        <InputNumber
                           className="focus:outline-none border rounded px-2 py-1 input-fx"
-                          placeholder="00.00"
+                          step={1}
+                          value={`${
+                            unit === 'mm'
+                              ? (F / defaultUnit[unit]).toFixed(2)
+                              : (F / defaultUnit[unit]).toFixed(1)
+                          }`}
+                          onChange={(value) => handleChangeSize(value, 'flap')}
                         />
                         %
                       </span>
@@ -963,24 +1106,39 @@ export default function GetOffer() {
                     <div className="font-semibold">
                       <span className="text-gray-800">
                         PLUG
-                        <input
-                          type="text"
+                        <InputNumber
                           className="focus:outline-none border rounded px-2 py-1 input-fx"
-                          placeholder="00.00"
+                          step={1}
+                          value={`${
+                            unit === 'mm'
+                              ? (P / defaultUnit[unit]).toFixed(2)
+                              : (P / defaultUnit[unit]).toFixed(1)
+                          }`}
+                          onChange={(value) => handleChangeSize(value, 'plug')}
                         />
-                        cm
+                        mm
                       </span>
                     </div>
                   </div>
                 </div>
                 <div className="rounded-sm border ml-2 mr-2 px-2 py-3 text-center total m-5 left-right">
-                  ขนาดสินค้ารวม 15 x 20 x 20 cm. ขนาดสินค้าไม่เกิน A$
+                  {`ขนาดสินค้ารวม ${A} x ${B} ${unit} ขนาดสินค้าไม่เกิน ${
+                    A * B >= 999949
+                      ? 'A0'
+                      : A * B >= 499554
+                      ? 'A1'
+                      : A * B >= 249480
+                      ? 'A2'
+                      : A * B >= 124740
+                      ? 'A3'
+                      : A * B >= 62370
+                      ? 'A4'
+                      : 'A5'
+                  }`}
                 </div>
                 <label
                   onClick={() =>
-                    OpenMoreDetail
-                      ? setOpenModeDetail(false)
-                      : setOpenModeDetail(true)
+                    OpenMoreDetail ? SetMoreDetail(false) : SetMoreDetail(true)
                   }
                   className="ml-6 more-detail-na"
                 >
@@ -1075,26 +1233,18 @@ export default function GetOffer() {
                 ภาพตัวอย่างกล่องเมื่อกางออก
               </label>
               <div className="mt-6 mb-7 lg:col-span-4 col-span-8">
-                <img
-                  className="box-pic01"
-                  src="https://www.img.in.th/images/e3a0d7d949e2459292f771fa1e7581c3.png"
-                  alt="1"
-                />
+                <TUCK_END_BOXES_MAIN />
               </div>
               <div className="col-span-8 lg:col-span-2">
                 <div className="both-btn2d">
                   <button
-                    onClick={() =>
-                      Dieline ? null : SetDieline(true)
-                    }
+                    onClick={() => (Dieline ? null : SetDieline(true))}
                     className={Dieline ? 'btn-2d active' : 'btn-2d'}
                   >
                     2D
                   </button>
                   <button
-                    onClick={() =>
-                      Dieline ? SetDieline(false) : null
-                    }
+                    onClick={() => (Dieline ? SetDieline(false) : null)}
                     className={Dieline ? 'btn-dieline' : 'btn-dieline active'}
                   >
                     Dieline
@@ -1117,17 +1267,11 @@ export default function GetOffer() {
             <div className="grid grid-cols-5 gap-0">
               <div className="col-span-2 con-0">ประเภทกระดาษ</div>
               <div className="col-span-2 con-1 flex">
-                <select className="m-auto border float-left rounded  focus:outline-none input-fx">
-                  {paperSelect(resPaperName)}
-                </select>
+                {paperSelect(resPaperName)}
               </div>
               <div className="col-span-1 con-2"></div>
               <div className="col-span-5 con-3">
-                <span className="span-v">
-                  <select className="m-auto border rounded  focus:outline-none input-fx">
-                    {paperSelect(resPaperName)}
-                  </select>
-                </span>
+                <span className="span-v">{printerSelect(resPrinterName)}</span>
               </div>
             </div>
           </div>
@@ -1275,7 +1419,7 @@ export default function GetOffer() {
             <DataTable obj={arrayOfObjects} dataInOnePage={5} />
             <span className="block m-auto text-center md:float-right mb-5 mt-2">
               <button onClick={SentCall} className="btn-layout mr-2">
-                คำนวนราคา
+                คำนวณราคา
               </button>
               <button className="btn-reset">แก้ไข</button>
             </span>

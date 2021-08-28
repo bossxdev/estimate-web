@@ -1,5 +1,5 @@
-const SET_DOC_OFFER = 'SET_DOC_OFFER'
-const SET_DOC_CALL_PAGE = 'SET_DOC_CALL_PAGE'
+const SET_DOC_OFFER = 'Doc_Param/SET_DOC_OFFER'
+const SET_DOC_CALL_PAGE = 'Doc_Param/SET_DOC_CALL_PAGE'
 
 const initialState = {
   docOffer: [
