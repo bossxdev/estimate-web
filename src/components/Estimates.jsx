@@ -43,7 +43,6 @@ const Part2ModalBody = (props) => {
   const [, setPrevUnit] = useState('mm')
 
   const defaultUnit = { mm: 1, cm: 10, inch: 25.4 }
-
   const [orderGroup, setOrderGroup] = useState({
     key: 'ordergroup',
     default: {
@@ -187,8 +186,6 @@ const Part2ModalBody = (props) => {
       setOrderGroup({ ...orderGroup, [name]: value })
     }
   }
-
-  console.log('object -->', orderGroup)
 
   const selectUnit = () => (
     <select

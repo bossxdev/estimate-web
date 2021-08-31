@@ -56,6 +56,19 @@ export default function GetOffer() {
   const [, setPrevUnit] = useState('mm')
 
   const defaultUnit = { mm: 1, cm: 10, inch: 25.4 }
+  const [orderGroup, setOrderGroup] = useState({
+    key: 'ordergroup',
+    default: {
+      amount1: 0,
+      amount2: 0,
+      amount3: 0,
+      amount4: 0,
+      amount5: 0,
+      amount6: 0,
+      amount7: 0,
+      amount8: 0,
+    },
+  })
 
   const arrayOfObjects = [
     {
@@ -377,6 +390,14 @@ export default function GetOffer() {
         },
       ])
     )
+  }
+
+  const handleAmountGroup = (e) => {
+    const { name, value } = e.target
+    const reg = /^-?\d*(\.\d*)?$/
+    if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
+      setOrderGroup({ ...orderGroup, [name]: value })
+    }
   }
 
   const WhenClickLay = () => {
@@ -1285,7 +1306,11 @@ export default function GetOffer() {
                   จำนวนที่ 1
                   <input
                     type="text"
+                    id="amount1"
                     className="focus:outline-none border rounded input-fx"
+                    name="amount1"
+                    value={orderGroup.amount1}
+                    onChange={handleAmountGroup}
                   />
                 </span>
               </div>
@@ -1294,7 +1319,11 @@ export default function GetOffer() {
                   จำนวนที่ 2
                   <input
                     type="text"
+                    id="amount2"
                     className="focus:outline-none border rounded input-fx"
+                    name="amount2"
+                    value={orderGroup.amount2}
+                    onChange={handleAmountGroup}
                   />
                 </span>
               </div>
@@ -1303,7 +1332,11 @@ export default function GetOffer() {
                   จำนวนที่ 3
                   <input
                     type="text"
+                    id="amount3"
                     className="focus:outline-none border rounded input-fx"
+                    name="amount3"
+                    value={orderGroup.amount3}
+                    onChange={handleAmountGroup}
                   />
                 </span>
               </div>
@@ -1312,7 +1345,11 @@ export default function GetOffer() {
                   จำนวนที่ 4
                   <input
                     type="text"
+                    id="amount4"
                     className="focus:outline-none border rounded input-fx"
+                    name="amount4"
+                    value={orderGroup.amount4}
+                    onChange={handleAmountGroup}
                   />
                 </span>
               </div>
@@ -1321,7 +1358,11 @@ export default function GetOffer() {
                   จำนวนที่ 5
                   <input
                     type="text"
+                    id="amount5"
                     className="focus:outline-none border rounded input-fx"
+                    name="amount5"
+                    value={orderGroup.amount5}
+                    onChange={handleAmountGroup}
                   />
                 </span>
               </div>
@@ -1332,7 +1373,11 @@ export default function GetOffer() {
                   จำนวนที่ 6
                   <input
                     type="text"
+                    id="amount6"
                     className="focus:outline-none border rounded input-fx"
+                    name="amount6"
+                    value={orderGroup.amount6}
+                    onChange={handleAmountGroup}
                   />
                 </span>
               </div>
@@ -1341,7 +1386,11 @@ export default function GetOffer() {
                   จำนวนที่ 7
                   <input
                     type="text"
+                    id="amount7"
                     className="focus:outline-none border rounded input-fx"
+                    name="amount7"
+                    value={orderGroup.amount7}
+                    onChange={handleAmountGroup}
                   />
                 </span>
               </div>
@@ -1350,7 +1399,11 @@ export default function GetOffer() {
                   จำนวนที่ 8
                   <input
                     type="text"
+                    id="amount8"
                     className="focus:outline-none border rounded input-fx"
+                    name="amount8"
+                    value={orderGroup.amount8}
+                    onChange={handleAmountGroup}
                   />
                 </span>
               </div>
