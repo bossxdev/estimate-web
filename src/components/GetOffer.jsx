@@ -762,7 +762,7 @@ export default function GetOffer() {
                       </td>
                     </tr>
                     <tr>
-                      <td className="t1">ปั๊ม foil</td>
+                      <td className="t1">ปั๊มฟอยล์</td>
                       <td colSpan="4">
                         <div className="grid grid-cols-1 gap-0 lg:grid-cols-5">
                           <div className="custom-20 col-span-1">

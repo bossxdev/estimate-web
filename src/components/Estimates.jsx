@@ -44,6 +44,20 @@ const Part2ModalBody = (props) => {
 
   const defaultUnit = { mm: 1, cm: 10, inch: 25.4 }
 
+  const [orderGroup, setOrderGroup] = useState({
+    key: 'ordergroup',
+    default: {
+      amount1: 0,
+      amount2: 0,
+      amount3: 0,
+      amount4: 0,
+      amount5: 0,
+      amount6: 0,
+      amount7: 0,
+      amount8: 0,
+    },
+  })
+
   useEffect(() => {
     // //? สินค้า
     const getProductFormDB = async () => {
@@ -165,6 +179,16 @@ const Part2ModalBody = (props) => {
       dispatch(setUnit(value))
     }
   }
+
+  const handleAmountGroup = (e) => {
+    const { name, value } = e.target
+    const reg = /^-?\d*(\.\d*)?$/
+    if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
+      setOrderGroup({ ...orderGroup, [name]: value })
+    }
+  }
+
+  console.log('object -->', orderGroup)
 
   const selectUnit = () => (
     <select
@@ -525,7 +549,7 @@ const Part2ModalBody = (props) => {
                       </td>
                     </tr>
                     <tr>
-                      <td className="t1">ปั๊ม foil</td>
+                      <td className="t1">ปั๊มฟอยล์</td>
                       <td colSpan="4">
                         <div className="grid grid-cols-1 gap-0 lg:grid-cols-5">
                           <div className="custom-20 col-span-1">
@@ -816,28 +840,44 @@ const Part2ModalBody = (props) => {
                       จำนวนที่ 1<br />
                       <input
                         type="text"
+                        id="amount1"
                         className="focus:outline-none border rounded px-2 py-1 input-fx file-de"
+                        name="amount1"
+                        value={orderGroup.amount1}
+                        onChange={handleAmountGroup}
                       />
                     </td>
                     <td>
                       จำนวนที่ 2<br />
                       <input
                         type="text"
+                        id="amount2"
                         className="focus:outline-none border rounded px-2 py-1 input-fx file-de"
+                        name="amount2"
+                        value={orderGroup.amount2}
+                        onChange={handleAmountGroup}
                       />
                     </td>
                     <td>
                       จำนวนที่ 3<br />
                       <input
                         type="text"
+                        id="amount3"
                         className="focus:outline-none border rounded px-2 py-1 input-fx file-de"
+                        name="amount3"
+                        value={orderGroup.amount3}
+                        onChange={handleAmountGroup}
                       />
                     </td>
                     <td>
                       จำนวนที่ 4<br />
                       <input
                         type="text"
+                        id="amount4"
                         className="focus:outline-none border rounded px-2 py-1 input-fx file-de"
+                        name="amount4"
+                        value={orderGroup.amount4}
+                        onChange={handleAmountGroup}
                       />
                     </td>
                   </tr>
@@ -846,28 +886,44 @@ const Part2ModalBody = (props) => {
                       จำนวนที่ 5<br />
                       <input
                         type="text"
+                        id="amount5"
                         className="focus:outline-none border rounded px-2 py-1 input-fx file-de"
+                        name="amount5"
+                        value={orderGroup.amount5}
+                        onChange={handleAmountGroup}
                       />
                     </td>
                     <td>
                       จำนวนที่ 6<br />
                       <input
                         type="text"
+                        id="amount6"
                         className="focus:outline-none border rounded px-2 py-1 input-fx file-de"
+                        name="amount6"
+                        value={orderGroup.amount6}
+                        onChange={handleAmountGroup}
                       />
                     </td>
                     <td>
                       จำนวนที่ 7<br />
                       <input
                         type="text"
+                        id="amount7"
                         className="focus:outline-none border rounded px-2 py-1 input-fx file-de"
+                        name="amount7"
+                        value={orderGroup.amount7}
+                        onChange={handleAmountGroup}
                       />
                     </td>
                     <td>
                       จำนวนที่ 8<br />
                       <input
                         type="text"
+                        id="amount8"
                         className="focus:outline-none border rounded px-2 py-1 input-fx file-de"
+                        name="amount8"
+                        value={orderGroup.amount8}
+                        onChange={handleAmountGroup}
                       />
                     </td>
                   </tr>
