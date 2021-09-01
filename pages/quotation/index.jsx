@@ -1,5 +1,5 @@
 import React from 'react'
-import IndexPage from '../../src/components/indexPage'
+import IndexPage from '../../src/components/IndexPage'
 
 export default function offer() {
   return (
