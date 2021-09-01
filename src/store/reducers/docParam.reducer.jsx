@@ -1,5 +1,6 @@
 const SET_DOC_OFFER = 'Doc_Param/SET_DOC_OFFER'
 const SET_DOC_CALL_PAGE = 'Doc_Param/SET_DOC_CALL_PAGE'
+const SET_PAPER = 'Doc_Param/SET_PAPER'
 
 const initialState = {
   docOffer: [
@@ -26,6 +27,7 @@ const initialState = {
       Action: null,
     },
   ],
+  paper: '',
 }
 
 export default function DocParam(state = initialState, action) {
@@ -39,6 +41,11 @@ export default function DocParam(state = initialState, action) {
       return {
         ...state,
         docCallPage: action.payload,
+      }
+    case SET_PAPER:
+      return {
+        ...state,
+        paper: action.payload,
       }
     default:
       return state
@@ -58,6 +65,15 @@ export const setDocCallPage = (data) => {
   return async (dispatch) => {
     dispatch({
       type: SET_DOC_CALL_PAGE,
+      payload: data,
+    })
+  }
+}
+
+export const setPaper = (data) => {
+  return async (dispatch) => {
+    dispatch({
+      type: SET_PAPER,
       payload: data,
     })
   }

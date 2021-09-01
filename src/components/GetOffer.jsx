@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useSelector, useDispatch } from 'react-redux'
-import { InputNumber } from 'antd'
+import { InputNumber, Modal } from 'antd'
 import { setDocOffer } from '../store/reducers/docParam.reducer'
 import {
   setResProductName,
@@ -19,6 +19,7 @@ import {
   setUnit,
   setLayout,
 } from '../store/reducers/boxes.reducer'
+import { setPaper } from '../store/reducers/docParam.reducer'
 import {
   GET_PRODUCT_CATEGORY,
   GET_MATERIAL_CATEGORY,
@@ -41,7 +42,7 @@ export default function GetOffer() {
     resEnamelName,
     resPrinterName,
   } = useSelector((state) => state.main)
-  const { docOffer } = useSelector((state) => state.docParam)
+  const { docOffer, paper } = useSelector((state) => state.docParam)
   const { token } = useSelector((state) => state.auth)
   const { A, B, C, F, P, unit } = useSelector((state) => state.boxes)
 
@@ -275,33 +276,41 @@ export default function GetOffer() {
     Dieline ? dispatch(setLayout(Dieline)) : dispatch(setLayout(Dieline))
   }, [Dieline, dispatch])
 
-  const product = (resProductName) => {
-    const dataButton = resProductName.map((response, index) => (
-      <option key={''} value={index}>
-        {response}
+  const handleProduct = (resProductName) => {
+    const dataButton = resProductName.map((name, index) => (
+      <option key={index} value={name}>
+        {name}
       </option>
     ))
     return dataButton
   }
 
-  const material = (e) => {
-    if (e.target.value === '0') {
-      const dataButton = resMaterialName.map((response, index) => (
-        <option key={''} value={index}>
-          {response}
+  const handleMaterial = (e) => {
+    if (e.target.value === 'กล่องบรรจุภัณฑ์') {
+      const dataButton = resMaterialName.map((name, index) => (
+        <option key={index} value={name}>
+          {name}
         </option>
       ))
       setMaterialName(dataButton)
+      return dataButton
     }
   }
 
-  const paper = (e) => {
-    if (e.target.value === '0') {
-      const dataButton = resPaperName.map((name) => (
-        <option key={''}>{name}</option>
+  const handlePaper = (e) => {
+    if (e.target.value === 'กระดาษ') {
+      const dataButton = resPaperName.map((name, index) => (
+        <option key={index} value={name}>
+          {name}
+        </option>
       ))
       setPaperName(dataButton)
+      return dataButton
     }
+  }
+
+  const handlePaperSelect = (e) => {
+    dispatch(setPaper(e.target.value))
   }
 
   const handleChangeSize = (value, type) => {
@@ -358,6 +367,32 @@ export default function GetOffer() {
     }
   }
 
+  const handleAmountGroup = (e) => {
+    const { name, value } = e.target
+    const reg = /^-?\d*(\.\d*)?$/
+    if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
+      setOrderGroup({ ...orderGroup, [name]: value })
+    }
+  }
+
+  //TODO
+
+  const modalErrorMsg = (message) => {
+    Modal.error({
+      title: 'คำเตือน !',
+      content: `${message}`,
+    })
+  }
+
+  const WhenClickLay = () => {
+    console.log('paper -->', paper)
+    if (paper === '') {
+      return modalErrorMsg('กรุณาระบุ "ประเภทกระดาษ"')
+    } else {
+      Boolean(ClickLay) ? SetClickLay(false) : SetClickLay(true)
+    }
+  }
+
   const selectUnit = () => (
     <select
       className="border rounded px-2 py-2 focus:outline-none"
@@ -390,18 +425,6 @@ export default function GetOffer() {
         },
       ])
     )
-  }
-
-  const handleAmountGroup = (e) => {
-    const { name, value } = e.target
-    const reg = /^-?\d*(\.\d*)?$/
-    if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
-      setOrderGroup({ ...orderGroup, [name]: value })
-    }
-  }
-
-  const WhenClickLay = () => {
-    Boolean(ClickLay) ? SetClickLay(false) : SetClickLay(true)
   }
 
   const FX_More_One = (e) => {
@@ -577,12 +600,12 @@ export default function GetOffer() {
                   </span>
                   <select
                     className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
-                    onChange={material}
+                    onChange={handleMaterial}
                   >
                     <option selected disabled>
                       เลือกสินค้า
                     </option>
-                    {product(resProductName)}
+                    {handleProduct(resProductName)}
                   </select>
                   {/* //? รูปแบบสินค้า */}
                   <span className="col-span-1 text-gray-800 text-look-product-show">
@@ -590,7 +613,7 @@ export default function GetOffer() {
                   </span>
                   <select
                     className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
-                    onChange={paper}
+                    onChange={handlePaper}
                   >
                     <option selected disabled>
                       เลือกรูปแบบสินค้า
@@ -601,7 +624,10 @@ export default function GetOffer() {
                   <span className="col-span-1 text-gray-800 text-look-product-show">
                     ประเภทกระดาษ:
                   </span>
-                  <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
+                  <select
+                    className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
+                    onChange={handlePaperSelect}
+                  >
                     <option selected disabled>
                       เลือกประเภทกระดาษ
                     </option>
