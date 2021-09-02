@@ -67,7 +67,7 @@ export default function GetOffer() {
   const arrayOfObjects = [
     {
       ลำดับ: <button className="btn-best-top-1">BEST TOP 1</button>,
-      ประเภทกระดาษ: 'อาร์ตการ์ด 300 แกรม 2หน้า',
+      ประเภทกระดาษ: paper,
       'ขนาดใบใหญ่:Inch.': '31x43',
       ผ่า: '4',
       'ขนาดที่เลย์:Inch.': '15.5 X 21.5',
@@ -88,7 +88,7 @@ export default function GetOffer() {
     },
     {
       ลำดับ: <button className="btn-best-top-2">BEST TOP 2</button>,
-      ประเภทกระดาษ: 'อาร์ตการ์ด 300 แกรม 2หน้า',
+      ประเภทกระดาษ: paper,
       'ขนาดใบใหญ่:Inch.': '31x43',
       ผ่า: '4',
       'ขนาดที่เลย์:Inch.': '15.5 X 21.5',
@@ -109,7 +109,7 @@ export default function GetOffer() {
     },
     {
       ลำดับ: <button className="btn-best-top-3">BEST TOP 3</button>,
-      ประเภทกระดาษ: 'อาร์ตการ์ด 300 แกรม 2หน้า',
+      ประเภทกระดาษ: paper,
       'ขนาดใบใหญ่:Inch.': '31x43',
       ผ่า: '4',
       'ขนาดที่เลย์:Inch.': '15.5 X 21.5',
@@ -130,7 +130,7 @@ export default function GetOffer() {
     },
     {
       ลำดับ: '1',
-      ประเภทกระดาษ: 'อาร์ตการ์ด 300 แกรม 2หน้า',
+      ประเภทกระดาษ: paper,
       'ขนาดใบใหญ่:Inch.': '31x43',
       ผ่า: '4',
       'ขนาดที่เลย์:Inch.': '15.5 X 21.5',
@@ -151,7 +151,7 @@ export default function GetOffer() {
     },
     {
       ลำดับ: '2',
-      ประเภทกระดาษ: 'อาร์ตการ์ด 300 แกรม 2หน้า',
+      ประเภทกระดาษ: paper,
       'ขนาดใบใหญ่:Inch.': '31x43',
       ผ่า: '4',
       'ขนาดที่เลย์:Inch.': '15.5 X 21.5',
@@ -172,7 +172,7 @@ export default function GetOffer() {
     },
     {
       ลำดับ: '3',
-      ประเภทกระดาษ: 'อาร์ตการ์ด 300 แกรม 2หน้า',
+      ประเภทกระดาษ: paper,
       'ขนาดใบใหญ่:Inch.': '31x43',
       ผ่า: '4',
       'ขนาดที่เลย์:Inch.': '15.5 X 21.5',
@@ -193,7 +193,7 @@ export default function GetOffer() {
     },
     {
       ลำดับ: '4',
-      ประเภทกระดาษ: 'อาร์ตการ์ด 300 แกรม 2หน้า',
+      ประเภทกระดาษ: paper,
       'ขนาดใบใหญ่:Inch.': '31x43',
       ผ่า: '4',
       'ขนาดที่เลย์:Inch.': '15.5 X 21.5',
@@ -643,6 +643,19 @@ export default function GetOffer() {
                       เลือกประเภทกระดาษ
                     </option>
                     {paperName}
+                  </select>
+                  {/* //? ประเภทกระดาษ */}
+                  <span className="col-span-1 text-gray-800 text-look-product-show">
+                    เลือกกระดาษ:
+                  </span>
+                  <select
+                    className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
+                    // onChange={handlePaperSelect}
+                  >
+                    <option selected disabled>
+                      กระดาษ
+                    </option>
+                    {/* {paperName} */}
                   </select>
                 </div>
               </div>
