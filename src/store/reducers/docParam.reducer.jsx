@@ -31,18 +31,16 @@ const initialState = {
   ],
   paper: '',
   printer: '',
-  orderGroup: [
-    {
-      amount1: 0,
-      amount2: 0,
-      amount3: 0,
-      amount4: 0,
-      amount5: 0,
-      amount6: 0,
-      amount7: 0,
-      amount8: 0,
-    },
-  ],
+  orderGroup: {
+    amount1: 0,
+    amount2: 0,
+    amount3: 0,
+    amount4: 0,
+    amount5: 0,
+    amount6: 0,
+    amount7: 0,
+    amount8: 0,
+  },
 }
 
 export default function DocParam(state = initialState, action) {

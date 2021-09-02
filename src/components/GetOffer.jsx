@@ -397,14 +397,12 @@ export default function GetOffer() {
     if (printer === '') {
       return modalErrorMsg('กรุณาระบุ "เครื่องพิมพ์"')
     }
-    if (orderGroup['amount1'] <= 99) {
+    if (orderGroup.amount1 < 100) {
       return modalErrorMsg('กรุณาระบุจำนวณผลิต ขั้นต่ำ 100 กล่อง !')
     } else {
       Boolean(ClickLay) ? SetClickLay(false) : SetClickLay(true)
     }
   }
-
-  console.log('test -->', orderGroup['amount1'])
 
   const selectUnit = () => (
     <select
@@ -1358,7 +1356,6 @@ export default function GetOffer() {
                     id="amount1"
                     className="focus:outline-none border rounded input-fx"
                     name="amount1"
-                    value={orderGroup.amount1}
                     onChange={handleAmountGroup}
                   />
                 </span>
@@ -1371,7 +1368,6 @@ export default function GetOffer() {
                     id="amount2"
                     className="focus:outline-none border rounded input-fx"
                     name="amount2"
-                    value={orderGroup.amount2}
                     onChange={handleAmountGroup}
                   />
                 </span>
@@ -1384,7 +1380,6 @@ export default function GetOffer() {
                     id="amount3"
                     className="focus:outline-none border rounded input-fx"
                     name="amount3"
-                    value={orderGroup.amount3}
                     onChange={handleAmountGroup}
                   />
                 </span>
@@ -1397,7 +1392,6 @@ export default function GetOffer() {
                     id="amount4"
                     className="focus:outline-none border rounded input-fx"
                     name="amount4"
-                    value={orderGroup.amount4}
                     onChange={handleAmountGroup}
                   />
                 </span>
@@ -1410,7 +1404,6 @@ export default function GetOffer() {
                     id="amount5"
                     className="focus:outline-none border rounded input-fx"
                     name="amount5"
-                    value={orderGroup.amount5}
                     onChange={handleAmountGroup}
                   />
                 </span>
@@ -1425,7 +1418,6 @@ export default function GetOffer() {
                     id="amount6"
                     className="focus:outline-none border rounded input-fx"
                     name="amount6"
-                    value={orderGroup.amount6}
                     onChange={handleAmountGroup}
                   />
                 </span>
@@ -1438,7 +1430,6 @@ export default function GetOffer() {
                     id="amount7"
                     className="focus:outline-none border rounded input-fx"
                     name="amount7"
-                    value={orderGroup.amount7}
                     onChange={handleAmountGroup}
                   />
                 </span>
@@ -1451,7 +1442,6 @@ export default function GetOffer() {
                     id="amount8"
                     className="focus:outline-none border rounded input-fx"
                     name="amount8"
-                    value={orderGroup.amount8}
                     onChange={handleAmountGroup}
                   />
                 </span>
