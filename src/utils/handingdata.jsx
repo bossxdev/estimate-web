@@ -53,30 +53,3 @@ export const enamelSelect = (resEnamelName) => {
     </>
   )
 }
-
-//? เลือกประเภทเครื่องพิมพ์
-export const printerSelect = (resPrinterName) => {
-  const dataButton = resPrinterName
-
-  const printer = (e) => {
-    return e.target.value
-  }
-
-  return (
-    <>
-      <select
-        className="m-auto border rounded  focus:outline-none input-fx"
-        onChange={printer}
-      >
-        <option selected disabled>
-          เลือกประเภทเครื่องพิมพ์
-        </option>
-        {dataButton.map((response, index) => (
-          <option key={''} value={index}>
-            {response}
-          </option>
-        ))}
-      </select>
-    </>
-  )
-}

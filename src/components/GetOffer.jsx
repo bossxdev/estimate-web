@@ -19,7 +19,11 @@ import {
   setUnit,
   setLayout,
 } from '../store/reducers/boxes.reducer'
-import { setPaper } from '../store/reducers/docParam.reducer'
+import {
+  setPaper,
+  setPrinter,
+  setOrderGroup,
+} from '../store/reducers/docParam.reducer'
 import {
   GET_PRODUCT_CATEGORY,
   GET_MATERIAL_CATEGORY,
@@ -27,7 +31,7 @@ import {
   GET_ENAMEL_LIST,
   GET_PRINTER_NAME,
 } from '../../pages/api/getData.api'
-import { paperSelect, enamelSelect, printerSelect } from '../utils/handingdata'
+import { paperSelect, enamelSelect } from '../utils/handingdata'
 import TUCK_END_BOXES_MAIN from './boxes/tuckEndBoxes/main'
 import DataTable from './DataTable'
 
@@ -42,7 +46,9 @@ export default function GetOffer() {
     resEnamelName,
     resPrinterName,
   } = useSelector((state) => state.main)
-  const { docOffer, paper } = useSelector((state) => state.docParam)
+  const { docOffer, paper, printer, orderGroup } = useSelector(
+    (state) => state.docParam
+  )
   const { token } = useSelector((state) => state.auth)
   const { A, B, C, F, P, unit } = useSelector((state) => state.boxes)
 
@@ -57,19 +63,6 @@ export default function GetOffer() {
   const [, setPrevUnit] = useState('mm')
 
   const defaultUnit = { mm: 1, cm: 10, inch: 25.4 }
-  const [orderGroup, setOrderGroup] = useState({
-    key: 'ordergroup',
-    default: {
-      amount1: 0,
-      amount2: 0,
-      amount3: 0,
-      amount4: 0,
-      amount5: 0,
-      amount6: 0,
-      amount7: 0,
-      amount8: 0,
-    },
-  })
 
   const arrayOfObjects = [
     {
@@ -309,8 +302,21 @@ export default function GetOffer() {
     }
   }
 
+  const handlePrinter = (resPrinterName) => {
+    const dataButton = resPrinterName.map((name, index) => (
+      <option key={index} value={name}>
+        {name}
+      </option>
+    ))
+    return dataButton
+  }
+
   const handlePaperSelect = (e) => {
     dispatch(setPaper(e.target.value))
+  }
+
+  const handlePrinterSelect = (e) => {
+    dispatch(setPrinter(e.target.value))
   }
 
   const handleChangeSize = (value, type) => {
@@ -371,7 +377,7 @@ export default function GetOffer() {
     const { name, value } = e.target
     const reg = /^-?\d*(\.\d*)?$/
     if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
-      setOrderGroup({ ...orderGroup, [name]: value })
+      dispatch(setOrderGroup({ ...orderGroup, [name]: value }))
     }
   }
 
@@ -385,13 +391,20 @@ export default function GetOffer() {
   }
 
   const WhenClickLay = () => {
-    console.log('paper -->', paper)
     if (paper === '') {
       return modalErrorMsg('กรุณาระบุ "ประเภทกระดาษ"')
+    }
+    if (printer === '') {
+      return modalErrorMsg('กรุณาระบุ "เครื่องพิมพ์"')
+    }
+    if (orderGroup['amount1'] <= 99) {
+      return modalErrorMsg('กรุณาระบุจำนวณผลิต ขั้นต่ำ 100 กล่อง !')
     } else {
       Boolean(ClickLay) ? SetClickLay(false) : SetClickLay(true)
     }
   }
+
+  console.log('test -->', orderGroup['amount1'])
 
   const selectUnit = () => (
     <select
@@ -1318,7 +1331,17 @@ export default function GetOffer() {
               </div>
               <div className="col-span-1 con-2"></div>
               <div className="col-span-5 con-3">
-                <span className="span-v">{printerSelect(resPrinterName)}</span>
+                <span className="span-v">
+                  <select
+                    className="m-auto border rounded  focus:outline-none input-fx"
+                    onChange={handlePrinterSelect}
+                  >
+                    <option selected disabled>
+                      เลือกประเภทเครื่องพิมพ์
+                    </option>
+                    {handlePrinter(resPrinterName)}
+                  </select>
+                </span>
               </div>
             </div>
           </div>
