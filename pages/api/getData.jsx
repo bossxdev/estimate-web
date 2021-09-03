@@ -2,8 +2,10 @@ import axios from 'axios'
 import Cookies from 'js-cookie'
 import { HTTP_STATUS_CODE } from '../../src/utils/constants'
 
-const Http = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_ENDPOINT,
+console.log('process.env.NEXT_PUBLIC_LOCAL -->', process.env.NEXT_PUBLIC_LOCAL)
+
+const getData = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_LOCAL,
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json; charset=UTF-8',
@@ -15,7 +17,7 @@ const Http = axios.create({
   },
 })
 
-Http.interceptors.request.use(
+getData.interceptors.request.use(
   function (config) {
     const token = Cookies.get('token')
 
@@ -29,7 +31,7 @@ Http.interceptors.request.use(
   }
 )
 
-Http.interceptors.response.use(
+getData.interceptors.response.use(
   function (response) {
     return response
   },
@@ -46,4 +48,4 @@ Http.interceptors.response.use(
   }
 )
 
-export default Http
+export default getData

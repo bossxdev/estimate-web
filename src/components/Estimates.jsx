@@ -58,7 +58,7 @@ const Part2ModalBody = (props) => {
   })
 
   useEffect(() => {
-    // //? สินค้า
+    //? สินค้า
     const getProductFormDB = async () => {
       const product = await GET_PRODUCT_CATEGORY(token)
       const productAll = product.map(({ name }) => name)
