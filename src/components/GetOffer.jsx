@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useSelector, useDispatch } from 'react-redux'
-import { InputNumber } from 'antd'
+import { InputNumber, Modal } from 'antd'
 import { setDocOffer } from '../store/reducers/docParam.reducer'
 import {
   setResProductName,
@@ -20,13 +20,18 @@ import {
   setLayout,
 } from '../store/reducers/boxes.reducer'
 import {
+  setPaper,
+  setPrinter,
+  setOrderGroup,
+} from '../store/reducers/docParam.reducer'
+import {
   GET_PRODUCT_CATEGORY,
   GET_MATERIAL_CATEGORY,
   GET_PAPER_LIST,
   GET_ENAMEL_LIST,
   GET_PRINTER_NAME,
 } from '../../pages/api/getData.api'
-import { paperSelect, enamelSelect, printerSelect } from '../utils/handingdata'
+import { paperSelect, enamelSelect } from '../utils/handingdata'
 import TUCK_END_BOXES_MAIN from './boxes/tuckEndBoxes/main'
 import DataTable from './DataTable'
 
@@ -41,7 +46,9 @@ export default function GetOffer() {
     resEnamelName,
     resPrinterName,
   } = useSelector((state) => state.main)
-  const { docOffer } = useSelector((state) => state.docParam)
+  const { docOffer, paper, printer, orderGroup } = useSelector(
+    (state) => state.docParam
+  )
   const { token } = useSelector((state) => state.auth)
   const { A, B, C, F, P, unit } = useSelector((state) => state.boxes)
 
@@ -56,24 +63,11 @@ export default function GetOffer() {
   const [, setPrevUnit] = useState('mm')
 
   const defaultUnit = { mm: 1, cm: 10, inch: 25.4 }
-  const [orderGroup, setOrderGroup] = useState({
-    key: 'ordergroup',
-    default: {
-      amount1: 0,
-      amount2: 0,
-      amount3: 0,
-      amount4: 0,
-      amount5: 0,
-      amount6: 0,
-      amount7: 0,
-      amount8: 0,
-    },
-  })
 
   const arrayOfObjects = [
     {
       ลำดับ: <button className="btn-best-top-1">BEST TOP 1</button>,
-      ประเภทกระดาษ: 'อาร์ตการ์ด 300 แกรม 2หน้า',
+      ประเภทกระดาษ: paper,
       'ขนาดใบใหญ่:Inch.': '31x43',
       ผ่า: '4',
       'ขนาดที่เลย์:Inch.': '15.5 X 21.5',
@@ -94,7 +88,7 @@ export default function GetOffer() {
     },
     {
       ลำดับ: <button className="btn-best-top-2">BEST TOP 2</button>,
-      ประเภทกระดาษ: 'อาร์ตการ์ด 300 แกรม 2หน้า',
+      ประเภทกระดาษ: paper,
       'ขนาดใบใหญ่:Inch.': '31x43',
       ผ่า: '4',
       'ขนาดที่เลย์:Inch.': '15.5 X 21.5',
@@ -115,7 +109,7 @@ export default function GetOffer() {
     },
     {
       ลำดับ: <button className="btn-best-top-3">BEST TOP 3</button>,
-      ประเภทกระดาษ: 'อาร์ตการ์ด 300 แกรม 2หน้า',
+      ประเภทกระดาษ: paper,
       'ขนาดใบใหญ่:Inch.': '31x43',
       ผ่า: '4',
       'ขนาดที่เลย์:Inch.': '15.5 X 21.5',
@@ -136,7 +130,7 @@ export default function GetOffer() {
     },
     {
       ลำดับ: '1',
-      ประเภทกระดาษ: 'อาร์ตการ์ด 300 แกรม 2หน้า',
+      ประเภทกระดาษ: paper,
       'ขนาดใบใหญ่:Inch.': '31x43',
       ผ่า: '4',
       'ขนาดที่เลย์:Inch.': '15.5 X 21.5',
@@ -157,7 +151,7 @@ export default function GetOffer() {
     },
     {
       ลำดับ: '2',
-      ประเภทกระดาษ: 'อาร์ตการ์ด 300 แกรม 2หน้า',
+      ประเภทกระดาษ: paper,
       'ขนาดใบใหญ่:Inch.': '31x43',
       ผ่า: '4',
       'ขนาดที่เลย์:Inch.': '15.5 X 21.5',
@@ -178,7 +172,7 @@ export default function GetOffer() {
     },
     {
       ลำดับ: '3',
-      ประเภทกระดาษ: 'อาร์ตการ์ด 300 แกรม 2หน้า',
+      ประเภทกระดาษ: paper,
       'ขนาดใบใหญ่:Inch.': '31x43',
       ผ่า: '4',
       'ขนาดที่เลย์:Inch.': '15.5 X 21.5',
@@ -199,7 +193,7 @@ export default function GetOffer() {
     },
     {
       ลำดับ: '4',
-      ประเภทกระดาษ: 'อาร์ตการ์ด 300 แกรม 2หน้า',
+      ประเภทกระดาษ: paper,
       'ขนาดใบใหญ่:Inch.': '31x43',
       ผ่า: '4',
       'ขนาดที่เลย์:Inch.': '15.5 X 21.5',
@@ -275,33 +269,54 @@ export default function GetOffer() {
     Dieline ? dispatch(setLayout(Dieline)) : dispatch(setLayout(Dieline))
   }, [Dieline, dispatch])
 
-  const product = (resProductName) => {
-    const dataButton = resProductName.map((response, index) => (
-      <option key={''} value={index}>
-        {response}
+  const handleProduct = (resProductName) => {
+    const dataButton = resProductName.map((name, index) => (
+      <option key={index} value={name}>
+        {name}
       </option>
     ))
     return dataButton
   }
 
-  const material = (e) => {
-    if (e.target.value === '0') {
-      const dataButton = resMaterialName.map((response, index) => (
-        <option key={''} value={index}>
-          {response}
+  const handleMaterial = (e) => {
+    if (e.target.value === 'กล่องบรรจุภัณฑ์') {
+      const dataButton = resMaterialName.map((name, index) => (
+        <option key={index} value={name}>
+          {name}
         </option>
       ))
       setMaterialName(dataButton)
+      return dataButton
     }
   }
 
-  const paper = (e) => {
-    if (e.target.value === '0') {
-      const dataButton = resPaperName.map((name) => (
-        <option key={''}>{name}</option>
+  const handlePaper = (e) => {
+    if (e.target.value === 'กระดาษ') {
+      const dataButton = resPaperName.map((name, index) => (
+        <option key={index} value={name}>
+          {name}
+        </option>
       ))
       setPaperName(dataButton)
+      return dataButton
     }
+  }
+
+  const handlePrinter = (resPrinterName) => {
+    const dataButton = resPrinterName.map((name, index) => (
+      <option key={index} value={name}>
+        {name}
+      </option>
+    ))
+    return dataButton
+  }
+
+  const handlePaperSelect = (e) => {
+    dispatch(setPaper(e.target.value))
+  }
+
+  const handlePrinterSelect = (e) => {
+    dispatch(setPrinter(e.target.value))
   }
 
   const handleChangeSize = (value, type) => {
@@ -358,6 +373,37 @@ export default function GetOffer() {
     }
   }
 
+  const handleAmountGroup = (e) => {
+    const { name, value } = e.target
+    const reg = /^-?\d*(\.\d*)?$/
+    if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
+      dispatch(setOrderGroup({ ...orderGroup, [name]: value }))
+    }
+  }
+
+  //TODO
+
+  const modalErrorMsg = (message) => {
+    Modal.error({
+      title: 'คำเตือน !',
+      content: `${message}`,
+    })
+  }
+
+  const WhenClickLay = () => {
+    if (paper === '') {
+      return modalErrorMsg('กรุณาระบุ "ประเภทกระดาษ"')
+    }
+    if (printer === '') {
+      return modalErrorMsg('กรุณาระบุ "เครื่องพิมพ์"')
+    }
+    if (orderGroup.amount1 < 100) {
+      return modalErrorMsg('กรุณาระบุจำนวณผลิต ขั้นต่ำ 100 กล่อง !')
+    } else {
+      Boolean(ClickLay) ? SetClickLay(false) : SetClickLay(true)
+    }
+  }
+
   const selectUnit = () => (
     <select
       className="border rounded px-2 py-2 focus:outline-none"
@@ -390,18 +436,6 @@ export default function GetOffer() {
         },
       ])
     )
-  }
-
-  const handleAmountGroup = (e) => {
-    const { name, value } = e.target
-    const reg = /^-?\d*(\.\d*)?$/
-    if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
-      setOrderGroup({ ...orderGroup, [name]: value })
-    }
-  }
-
-  const WhenClickLay = () => {
-    Boolean(ClickLay) ? SetClickLay(false) : SetClickLay(true)
   }
 
   const FX_More_One = (e) => {
@@ -577,12 +611,12 @@ export default function GetOffer() {
                   </span>
                   <select
                     className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
-                    onChange={material}
+                    onChange={handleMaterial}
                   >
                     <option selected disabled>
                       เลือกสินค้า
                     </option>
-                    {product(resProductName)}
+                    {handleProduct(resProductName)}
                   </select>
                   {/* //? รูปแบบสินค้า */}
                   <span className="col-span-1 text-gray-800 text-look-product-show">
@@ -590,7 +624,7 @@ export default function GetOffer() {
                   </span>
                   <select
                     className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
-                    onChange={paper}
+                    onChange={handlePaper}
                   >
                     <option selected disabled>
                       เลือกรูปแบบสินค้า
@@ -601,11 +635,27 @@ export default function GetOffer() {
                   <span className="col-span-1 text-gray-800 text-look-product-show">
                     ประเภทกระดาษ:
                   </span>
-                  <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
+                  <select
+                    className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
+                    onChange={handlePaperSelect}
+                  >
                     <option selected disabled>
                       เลือกประเภทกระดาษ
                     </option>
                     {paperName}
+                  </select>
+                  {/* //? ประเภทกระดาษ */}
+                  <span className="col-span-1 text-gray-800 text-look-product-show">
+                    เลือกกระดาษ:
+                  </span>
+                  <select
+                    className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
+                    // onChange={handlePaperSelect}
+                  >
+                    <option selected disabled>
+                      กระดาษ
+                    </option>
+                    {/* {paperName} */}
                   </select>
                 </div>
               </div>
@@ -1292,7 +1342,17 @@ export default function GetOffer() {
               </div>
               <div className="col-span-1 con-2"></div>
               <div className="col-span-5 con-3">
-                <span className="span-v">{printerSelect(resPrinterName)}</span>
+                <span className="span-v">
+                  <select
+                    className="m-auto border rounded  focus:outline-none input-fx"
+                    onChange={handlePrinterSelect}
+                  >
+                    <option selected disabled>
+                      เลือกประเภทเครื่องพิมพ์
+                    </option>
+                    {handlePrinter(resPrinterName)}
+                  </select>
+                </span>
               </div>
             </div>
           </div>
@@ -1309,7 +1369,6 @@ export default function GetOffer() {
                     id="amount1"
                     className="focus:outline-none border rounded input-fx"
                     name="amount1"
-                    value={orderGroup.amount1}
                     onChange={handleAmountGroup}
                   />
                 </span>
@@ -1322,7 +1381,6 @@ export default function GetOffer() {
                     id="amount2"
                     className="focus:outline-none border rounded input-fx"
                     name="amount2"
-                    value={orderGroup.amount2}
                     onChange={handleAmountGroup}
                   />
                 </span>
@@ -1335,7 +1393,6 @@ export default function GetOffer() {
                     id="amount3"
                     className="focus:outline-none border rounded input-fx"
                     name="amount3"
-                    value={orderGroup.amount3}
                     onChange={handleAmountGroup}
                   />
                 </span>
@@ -1348,7 +1405,6 @@ export default function GetOffer() {
                     id="amount4"
                     className="focus:outline-none border rounded input-fx"
                     name="amount4"
-                    value={orderGroup.amount4}
                     onChange={handleAmountGroup}
                   />
                 </span>
@@ -1361,7 +1417,6 @@ export default function GetOffer() {
                     id="amount5"
                     className="focus:outline-none border rounded input-fx"
                     name="amount5"
-                    value={orderGroup.amount5}
                     onChange={handleAmountGroup}
                   />
                 </span>
@@ -1376,7 +1431,6 @@ export default function GetOffer() {
                     id="amount6"
                     className="focus:outline-none border rounded input-fx"
                     name="amount6"
-                    value={orderGroup.amount6}
                     onChange={handleAmountGroup}
                   />
                 </span>
@@ -1389,7 +1443,6 @@ export default function GetOffer() {
                     id="amount7"
                     className="focus:outline-none border rounded input-fx"
                     name="amount7"
-                    value={orderGroup.amount7}
                     onChange={handleAmountGroup}
                   />
                 </span>
@@ -1402,7 +1455,6 @@ export default function GetOffer() {
                     id="amount8"
                     className="focus:outline-none border rounded input-fx"
                     name="amount8"
-                    value={orderGroup.amount8}
                     onChange={handleAmountGroup}
                   />
                 </span>
