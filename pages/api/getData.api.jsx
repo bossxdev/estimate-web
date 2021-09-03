@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { AxiosGetData } from './http'
 
 //? สินค้า
 export const GET_PRODUCT_CATEGORY = async (token) => {
@@ -29,10 +30,12 @@ export const GET_PAPER_LIST = async (token) => {
 
 //? การเคลือบ
 export const GET_ENAMEL_LIST = async (token) => {
-  const url = 'http://localhost:8000/api/enamels-price?_sort=id:ASC'
-  const result = await axios.get(url, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
+  // const url = 'http://localhost:8000/api/enamels-price?_sort=id:ASC'
+  // const result = await AxiosGetData.get(url, {
+  //   headers: { Authorization: `Bearer ${token}` },
+  // })
+  const result = await AxiosGetData.get('/enamels-price?_sort=id:ASC')
+  console.log('result ------>', result.data)
   return result.data
 }
 
