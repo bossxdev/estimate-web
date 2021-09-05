@@ -2,10 +2,8 @@ import axios from 'axios'
 import Cookies from 'js-cookie'
 import { HTTP_STATUS_CODE } from '../../src/utils/constants'
 
-console.log('process.env.NEXT_PUBLIC_LOCAL -->', process.env.NEXT_PUBLIC_LOCAL)
-
 const getData = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_LOCAL,
+  baseURL: process.env.NEXT_PUBLIC_ESTIMATE,
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json; charset=UTF-8',
