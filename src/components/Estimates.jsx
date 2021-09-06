@@ -16,21 +16,24 @@ import {
   setUnit,
   setLayout,
 } from '../store/reducers/boxes.reducer'
+import { getProductsList } from '../store/reducers/product.reducer'
 import {
   GET_PRODUCT_CATEGORY,
   GET_MATERIAL_CATEGORY,
   GET_PAPER_LIST,
   GET_ENAMEL_LIST,
 } from '../../pages/api/getData.api'
-import { enamelSelect } from '../utils/handingdata'
+import { enamelSelect } from '../utils/handingData'
 import TUCK_END_BOXES_MAIN from './boxes/tuckEndBoxes/main'
 
 const Part2ModalBody = (props) => {
   const { SentStateJsonOffer } = props
   const dispatch = useDispatch()
 
-  const { resProductName, resMaterialName, resPaperName, resEnamelName } =
-    useSelector((state) => state.main)
+  const { resMaterialName, resPaperName, resEnamelName } = useSelector(
+    (state) => state.main
+  )
+  const { productsList, isLoading } = useSelector((state) => state.products)
   const { token } = useSelector((state) => state.auth)
   const { A, B, C, F, P, unit } = useSelector((state) => state.boxes)
 
@@ -56,6 +59,14 @@ const Part2ModalBody = (props) => {
       amount8: 0,
     },
   })
+
+  useEffect(() => {
+    //? สินค้า
+    const fetchData = async () => {
+      await dispatch(getProductsList())
+    }
+    fetchData()
+  }, [dispatch])
 
   useEffect(() => {
     //? สินค้า
@@ -89,8 +100,7 @@ const Part2ModalBody = (props) => {
       dispatch(setResEnamelName(enamelAll))
     }
     getEnamelFormDB()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [dispatch, token])
 
   useEffect(() => {
     Dieline ? dispatch(setLayout(Dieline)) : dispatch(setLayout(Dieline))
@@ -974,7 +984,6 @@ const Part2ModalBody = (props) => {
                       </label>
                       <div className="grid grid-cols-3 gap-4 mt-5">
                         <label className="file-attach">File Attach:</label>
-
                         <div className="d1">
                           <span>logobababishop.ai</span>
                           <br />

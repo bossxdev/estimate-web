@@ -31,7 +31,7 @@ import {
   GET_ENAMEL_LIST,
   GET_PRINTER_NAME,
 } from '../../pages/api/getData.api'
-import { paperSelect, enamelSelect } from '../utils/handingdata'
+import { paperSelect, enamelSelect } from '../utils/handingData'
 import TUCK_END_BOXES_MAIN from './boxes/tuckEndBoxes/main'
 import DataTable from './DataTable'
 

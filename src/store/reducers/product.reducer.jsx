@@ -3,114 +3,114 @@ import * as EndPoints from '../../../pages/api/endPoints'
 import { HTTP_STATUS_CODE, RESPONSE_MESSAGE } from '../../utils/constants'
 import { message } from 'antd'
 
-const FETCH_PAPER_LIST_REQUEST = 'Paper/FETCH_PAPER_LIST_REQUEST'
-const FETCH_PAPER_LIST_SUCCESS = 'Paper/FETCH_PAPER_LIST_SUCCESS'
-const FETCH_PAPER_LIST_FAILURE = 'Paper/FETCH_PAPER_LIST_FAILURE'
+const FETCH_PRODUCTS_LIST_REQUEST = 'Products/FETCH_PRODUCTS_LIST_REQUEST'
+const FETCH_PRODUCTS_LIST_SUCCESS = 'Products/FETCH_PRODUCTS_LIST_SUCCESS'
+const FETCH_PRODUCTS_LIST_FAILURE = 'Products/FETCH_PRODUCTS_LIST_FAILURE'
 
-// const FETCH_PAPER_REQUEST = 'Paper/FETCH_PAPER_REQUEST'
-// const FETCH_PAPER_SUCCESS = 'Paper/FETCH_PAPER_SUCCESS'
-// const FETCH_PAPER_FAILURE = 'Paper/FETCH_PAPER_FAILURE'
+// const FETCH_PRODUCTS_REQUEST = 'Products/FETCH_PRODUCTS_REQUEST'
+// const FETCH_PRODUCTS_SUCCESS = 'Products/FETCH_PRODUCTS_SUCCESS'
+// const FETCH_PRODUCTS_FAILURE = 'Products/FETCH_PRODUCTS_FAILURE'
 
-// const CREATE_PAPER_REQUEST = 'Paper/CREATE_PAPER_REQUEST'
-// const CREATE_PAPER_SUCCESS = 'Paper/CREATE_PAPER_SUCCESS'
-// const CREATE_PAPER_FAILURE = 'Paper/CREATE_PAPER_FAILURE'
+// const CREATE_PRODUCTS_REQUEST = 'Products/CREATE_PRODUCTS_REQUEST'
+// const CREATE_PRODUCTS_SUCCESS = 'Products/CREATE_PRODUCTS_SUCCESS'
+// const CREATE_PRODUCTS_FAILURE = 'Products/CREATE_PRODUCTS_FAILURE'
 
-// const DELETE_PAPER_REQUEST = 'Paper/DELETE_PAPER_REQUEST'
-// const DELETE_PAPER_SUCCESS = 'Paper/DELETE_PAPER_SUCCESS'
-// const DELETE_PAPER_FAILURE = 'Paper/DELETE_PAPER_FAILURE'
+// const DELETE_PRODUCTS_REQUEST = 'Products/DELETE_PRODUCTS_REQUEST'
+// const DELETE_PRODUCTS_SUCCESS = 'Products/DELETE_PRODUCTS_SUCCESS'
+// const DELETE_PRODUCTS_FAILURE = 'Products/DELETE_PRODUCTS_FAILURE'
 
-// const UPDATE_PAPER_REQUEST = 'Paper/UPDATE_PAPER_REQUEST'
-// const UPDATE_PAPER_SUCCESS = 'Paper/UPDATE_PAPER_SUCCESS'
-// const UPDATE_PAPER_FAILURE = 'Paper/UPDATE_PAPER_FAILURE'
+// const UPDATE_PRODUCTS_REQUEST = 'Products/UPDATE_PRODUCTS_REQUEST'
+// const UPDATE_PRODUCTS_SUCCESS = 'Products/UPDATE_PRODUCTS_SUCCESS'
+// const UPDATE_PRODUCTS_FAILURE = 'Products/UPDATE_PRODUCTS_FAILURE'
 
 // Initialize State
 const initialState = {
   isLoading: false,
-  paperList: [],
-  paper: {},
+  productsList: [],
+  products: {},
   error: {},
 }
 
 // Default Reducer
-export default function paper(state = initialState, action) {
+export default function products(state = initialState, action) {
   switch (action.type) {
-    case FETCH_PAPER_LIST_REQUEST:
+    case FETCH_PRODUCTS_LIST_REQUEST:
       return {
         ...state,
         isLoading: true,
       }
-    case FETCH_PAPER_LIST_SUCCESS:
+    case FETCH_PRODUCTS_LIST_SUCCESS:
       return {
         ...state,
         isLoading: false,
-        paperList: action.payload,
+        productsList: action.payload,
       }
-    case FETCH_PAPER_LIST_FAILURE:
+    case FETCH_PRODUCTS_LIST_FAILURE:
       return {
         ...state,
         error: action.error,
         isLoading: false,
       }
-    // case FETCH_PAPER_REQUEST:
+    // case FETCH_PRODUCTS_REQUEST:
     //   return {
     //     ...state,
     //     isLoading: true
     //   }
-    // case FETCH_PAPER_SUCCESS:
+    // case FETCH_PRODUCTS_SUCCESS:
     //   return {
     //     ...state,
     //     isLoading: false,
-    //     paper: action.payload
+    //     products: action.payload
     //   }
-    // case FETCH_PAPER_FAILURE:
+    // case FETCH_PRODUCTS_FAILURE:
     //   return {
     //     ...state,
     //     error: action.error,
     //     isLoading: false
     //   }
-    // case CREATE_PAPER_REQUEST:
+    // case CREATE_PRODUCTS_REQUEST:
     //   return {
     //     ...state,
     //     isLoading: true
     //   }
-    // case CREATE_PAPER_SUCCESS:
+    // case CREATE_PRODUCTS_SUCCESS:
     //   return {
     //     ...state,
     //     isLoading: false
     //   }
-    // case CREATE_PAPER_FAILURE:
+    // case CREATE_PRODUCTS_FAILURE:
     //   return {
     //     ...state,
     //     error: action.error,
     //     isLoading: false
     //   }
-    // case UPDATE_PAPER_REQUEST:
+    // case UPDATE_PRODUCTS_REQUEST:
     //   return {
     //     ...state,
     //     isLoading: true
     //   }
-    // case UPDATE_PAPER_SUCCESS:
+    // case UPDATE_PRODUCTS_SUCCESS:
     //   return {
     //     ...state,
     //     isLoading: false
     //   }
-    // case UPDATE_PAPER_FAILURE:
+    // case UPDATE_PRODUCTS_FAILURE:
     //   return {
     //     ...state,
     //     error: action.error,
     //     isLoading: false
     //   }
-    // case DELETE_PAPER_REQUEST:
+    // case DELETE_PRODUCTS_REQUEST:
     //   return {
     //     ...state,
     //     isLoading: true
     //   }
-    // case DELETE_PAPER_SUCCESS:
+    // case DELETE_PRODUCTS_SUCCESS:
     //   return {
     //     ...state,
     //     isLoading: false
     //   }
-    // case DELETE_PAPER_FAILURE:
+    // case DELETE_PRODUCTS_FAILURE:
     //   return {
     //     ...state,
     //     error: action.error,
@@ -122,83 +122,83 @@ export default function paper(state = initialState, action) {
 }
 
 // Action Creators
-export const getPaperList = () => {
+export const getProductsList = () => {
   return async (dispatch) => {
     try {
       dispatch({
-        type: FETCH_PAPER_LIST_REQUEST,
+        type: FETCH_PRODUCTS_LIST_REQUEST,
       })
 
-      const response = await getData.get(EndPoints.PAPER)
+      const response = await getData.get(EndPoints.PRODUCTS + `/category`)
       if (response.status === HTTP_STATUS_CODE.OK) {
         dispatch({
-          type: FETCH_PAPER_LIST_SUCCESS,
-          payload: response.data.data,
+          type: FETCH_PRODUCTS_LIST_SUCCESS,
+          payload: response.data,
         })
       }
     } catch (err) {
       dispatch({
-        type: FETCH_PAPER_LIST_FAILURE,
+        type: FETCH_PRODUCTS_LIST_FAILURE,
       })
     }
   }
 }
 
-// export const getPaperListById = (id) => {
+// export const getProductsListById = (id) => {
 //   return async (dispatch) => {
 //     try {
 //       dispatch({
-//         type: FETCH_PAPER_REQUEST,
+//         type: FETCH_PRODUCTS_REQUEST,
 //       })
 
-//       const response = await getData.get(EndPoints.PAPER + `/${id}`)
+//       const response = await getData.get(EndPoints.PRODUCTS + `/${id}`)
 //       if (response.status === HTTP_STATUS_CODE.OK) {
 //         dispatch({
-//           type: FETCH_PAPER_SUCCESS,
+//           type: FETCH_PRODUCTS_SUCCESS,
 //           payload: response.data.data,
 //         })
 //       }
 //     } catch (err) {
 //       dispatch({
-//         type: FETCH_PAPER_FAILURE,
+//         type: FETCH_PRODUCTS_FAILURE,
 //       })
 //     }
 //   }
 // }
 
-// export const createPaper = (data) => {
+// export const createPRODUCTS = (data) => {
 //   return async (dispatch) => {
 //     try {
 //       dispatch({
-//         type: CREATE_PAPER_REQUEST,
+//         type: CREATE_PRODUCTS_REQUEST,
 //       })
 
 //       const config = {
 //         headers: { 'content-type': 'application/json' },
 //       }
 
-//       const response = await getData.post(EndPoints.PAPER, data, config)
+//       const response = await getData.post(EndPoints.PRODUCTS, data, config)
 
 //       if (response.status === HTTP_STATUS_CODE.OK) {
 //         dispatch({
-//           type: CREATE_PAPER_SUCCESS,
+//           type: CREATE_PRODUCTS_SUCCESS,
 //         })
 //         message.success(RESPONSE_MESSAGE.SUCCESS)
 //       }
 //     } catch (err) {
 //       message.error(RESPONSE_MESSAGE.FAILURE)
 //       dispatch({
-//         type: CREATE_PAPER_FAILURE,
+//         type: CREATE_PRODUCTS_FAILURE,
 //       })
 //     }
 //   }
 // }
 
-// export const updatePaper = (id, data) => {
+// export const updateProducts = (id, data) => {
 //   return async (dispatch) => {
 //     try {
 //       dispatch({
-//         type: UPDATE_PAPER_REQUEST,
+//         type: UPDATE_PRODUCTS_REQUEST,
 //       })
 
 //       const config = {
@@ -206,75 +206,75 @@ export const getPaperList = () => {
 //       }
 
 //       const response = await getData.put(
-//         EndPoints.PAPER + `/${id}`,
+//         EndPoints.PRODUCTS + `/${id}`,
 //         data,
 //         config
 //       )
 
 //       if (response.status === HTTP_STATUS_CODE.OK) {
 //         dispatch({
-//           type: UPDATE_PAPER_SUCCESS,
+//           type: UPDATE_PRODUCTS_SUCCESS,
 //           payload: response.data.data,
 //         })
 //         message.success(RESPONSE_MESSAGE.SUCCESS)
 //       }
 //     } catch (err) {
 //       dispatch({
-//         type: UPDATE_PAPER_FAILURE,
+//         type: UPDATE_PRODUCTS_FAILURE,
 //       })
 //       message.success(RESPONSE_MESSAGE.FAILURE)
 //     }
 //   }
 // }
 
-// export const updateActivePaper = (id, data) => {
+// export const updateActiveProducts = (id, data) => {
 //   return async (dispatch) => {
 //     try {
 //       dispatch({
-//         type: UPDATE_PAPER_REQUEST,
+//         type: UPDATE_PRODUCTS_REQUEST,
 //       })
 //       let formData = { is_active: data }
 
 //       const response = await getData.put(
-//         EndPoints.PAPER + '/active/' + id,
+//         EndPoints.PRODUCTS + '/active/' + id,
 //         formData
 //       )
 
 //       if (response.status === HTTP_STATUS_CODE.OK) {
 //         dispatch({
-//           type: UPDATE_PAPER_SUCCESS,
+//           type: UPDATE_PRODUCTS_SUCCESS,
 //           payload: response.data.data,
 //         })
 //         message.success(RESPONSE_MESSAGE.SUCCESS)
 //       }
 //     } catch (err) {
 //       dispatch({
-//         type: UPDATE_PAPER_FAILURE,
+//         type: UPDATE_PRODUCTS_FAILURE,
 //       })
 //       message.success(RESPONSE_MESSAGE.FAILURE)
 //     }
 //   }
 // }
 
-// export const deletePaper = (id) => {
+// export const deleteProducts = (id) => {
 //   return async (dispatch) => {
 //     try {
 //       dispatch({
-//         type: DELETE_PAPER_REQUEST,
+//         type: DELETE_PRODUCTS_REQUEST,
 //       })
 
-//       const response = await getData.delete(EndPoints.PAPER + `/${id}`)
+//       const response = await getData.delete(EndPoints.PRODUCTS + `/${id}`)
 
 //       if (response.status === HTTP_STATUS_CODE.OK) {
 //         dispatch({
-//           type: DELETE_PAPER_SUCCESS,
+//           type: DELETE_PRODUCTS_SUCCESS,
 //         })
 //         message.success(RESPONSE_MESSAGE.SUCCESS)
 //       }
 //     } catch (err) {
 //       message.error(RESPONSE_MESSAGE.FAILURE)
 //       dispatch({
-//         type: DELETE_PAPER_FAILURE,
+//         type: DELETE_PRODUCTS_FAILURE,
 //       })
 //     }
 //   }

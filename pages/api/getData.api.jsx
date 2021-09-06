@@ -1,5 +1,5 @@
 import * as EndPoints from '../api/endPoints'
-import getData from './local'
+import getData from './estimate'
 
 //? สินค้า
 export const GET_PRODUCT_CATEGORY = async () => {
