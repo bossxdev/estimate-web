@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { InputNumber } from 'antd'
-import { setProductName } from '../store/reducers/main.reducer'
+import { setProductName, setMaterialName } from '../store/reducers/main.reducer'
 import {
   setA,
   setB,
@@ -12,23 +12,21 @@ import {
   setLayout,
 } from '../store/reducers/boxes.reducer'
 import { getProductsList } from '../store/reducers/product.reducer'
-import { enamelSelect } from '../utils/handingData'
+import { getMaterialListById } from '../store/reducers/material.reducer'
 import TUCK_END_BOXES_MAIN from './boxes/tuckEndBoxes/main'
 
 const Part2ModalBody = (props) => {
   const { SentStateJsonOffer } = props
   const dispatch = useDispatch()
-
-  const { productName } = useSelector((state) => state.main)
-  const { productsList, isLoading } = useSelector((state) => state.products)
+  const { productName, materialName } = useSelector((state) => state.main)
+  const { productsList } = useSelector((state) => state.products)
+  const { materialList } = useSelector((state) => state.material)
   const { A, B, C, F, P, unit } = useSelector((state) => state.boxes)
-
   const [OutSide, SetOutSide] = useState(true)
   const [Dieline, SetDieline] = useState(true)
   const [UVPrinting, SetUVPrinting] = useState(false)
   const [Foiling, SetFoiling] = useState(false)
   const [, setPrevUnit] = useState('mm')
-
   const defaultUnit = { mm: 1, cm: 10, inch: 25.4 }
   const [orderGroup, setOrderGroup] = useState({
     key: 'ordergroup',
@@ -51,11 +49,18 @@ const Part2ModalBody = (props) => {
       dispatch(setProductName(result))
     }
     getProductName()
-  }, [dispatch, productsList])
+  }, [])
 
   useEffect(() => {
     Dieline ? dispatch(setLayout(Dieline)) : dispatch(setLayout(Dieline))
-  }, [Dieline, dispatch])
+  }, [Dieline])
+
+  const getMaterialName = async (e) => {
+    const id = +e.target.value + 1
+    if (id === 1) {
+      await dispatch(getMaterialListById(id))
+    }
+  }
 
   const handleChangeSize = (value, type) => {
     switch (type) {
@@ -75,7 +80,7 @@ const Part2ModalBody = (props) => {
         dispatch(setP(value))
         break
       default:
-        return ''
+        return null
     }
   }
 
@@ -166,11 +171,16 @@ const Part2ModalBody = (props) => {
               <select
                 className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
                 placeHolder="เลือกสินค้า"
+                onChange={getMaterialName}
               >
                 <option selected disabled>
                   เลือกสินค้า
                 </option>
-                <option>{productName}</option>
+                {productName.map((name, index) => (
+                  <option key={name} value={index}>
+                    {name}
+                  </option>
+                ))}
               </select>
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 รูปแบบสินค้า:
@@ -179,6 +189,9 @@ const Part2ModalBody = (props) => {
                 <option selected disabled>
                   เลือกรูปแบบสินค้า
                 </option>
+                {materialList.map((item) => {
+                  return <option>{item.name}</option>
+                })}
               </select>
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 ประเภทกระดาษ:
@@ -956,9 +969,7 @@ const TheModalEstimate = (props) => {
   )
   const [NameClient, SetNameClient] = useState('')
   const [ClientType, SetClientType] = useState('ลุกค้าเก่า')
-
   const Digit = Number(String(Number(SendDataValue.รหัสเอกสาร) + 1).length) - 1
-
   let OurDate = new Date()
   let TheDay =
     String(OurDate.getDate()).length !== 1
@@ -972,7 +983,6 @@ const TheModalEstimate = (props) => {
     String(SendDataValue.วันที่) === ''
       ? String(TheDay + '/' + TheMonth + '/' + OurDate.getFullYear())
       : String(SendDataValue.วันที่)
-
   const GetTime = String(
     OurDate.getHours() + ':' + OurDate.getMinutes() + ' น.'
   )

@@ -3,114 +3,92 @@ import * as EndPoints from '../../../pages/api/endPoints'
 import { HTTP_STATUS_CODE, RESPONSE_MESSAGE } from '../../utils/constants'
 import { message } from 'antd'
 
-const FETCH_PRODUCTS_LIST_REQUEST = 'Products/FETCH_PRODUCTS_LIST_REQUEST'
-const FETCH_PRODUCTS_LIST_SUCCESS = 'Products/FETCH_PRODUCTS_LIST_SUCCESS'
-const FETCH_PRODUCTS_LIST_FAILURE = 'Products/FETCH_PRODUCTS_LIST_FAILURE'
+const FETCH_MATERIAL_REQUEST = 'Material/FETCH_MATERIAL_REQUEST'
+const FETCH_MATERIAL_SUCCESS = 'Material/FETCH_MATERIAL_SUCCESS'
+const FETCH_MATERIAL_FAILURE = 'Material/FETCH_MATERIAL_FAILURE'
 
-// const FETCH_PRODUCTS_REQUEST = 'Products/FETCH_PRODUCTS_REQUEST'
-// const FETCH_PRODUCTS_SUCCESS = 'Products/FETCH_PRODUCTS_SUCCESS'
-// const FETCH_PRODUCTS_FAILURE = 'Products/FETCH_PRODUCTS_FAILURE'
+// const CREATE_MATERIAL_REQUEST = 'Material/CREATE_MATERIAL_REQUEST'
+// const CREATE_MATERIAL_SUCCESS = 'Material/CREATE_MATERIAL_SUCCESS'
+// const CREATE_MATERIAL_FAILURE = 'Material/CREATE_MATERIAL_FAILURE'
 
-// const CREATE_PRODUCTS_REQUEST = 'Products/CREATE_PRODUCTS_REQUEST'
-// const CREATE_PRODUCTS_SUCCESS = 'Products/CREATE_PRODUCTS_SUCCESS'
-// const CREATE_PRODUCTS_FAILURE = 'Products/CREATE_PRODUCTS_FAILURE'
+// const DELETE_MATERIAL_REQUEST = 'Material/DELETE_MATERIAL_REQUEST'
+// const DELETE_MATERIAL_SUCCESS = 'Material/DELETE_MATERIAL_SUCCESS'
+// const DELETE_MATERIAL_FAILURE = 'Material/DELETE_MATERIAL_FAILURE'
 
-// const DELETE_PRODUCTS_REQUEST = 'Products/DELETE_PRODUCTS_REQUEST'
-// const DELETE_PRODUCTS_SUCCESS = 'Products/DELETE_PRODUCTS_SUCCESS'
-// const DELETE_PRODUCTS_FAILURE = 'Products/DELETE_PRODUCTS_FAILURE'
-
-// const UPDATE_PRODUCTS_REQUEST = 'Products/UPDATE_PRODUCTS_REQUEST'
-// const UPDATE_PRODUCTS_SUCCESS = 'Products/UPDATE_PRODUCTS_SUCCESS'
-// const UPDATE_PRODUCTS_FAILURE = 'Products/UPDATE_PRODUCTS_FAILURE'
+// const UPDATE_MATERIAL_REQUEST = 'Material/UPDATE_MATERIAL_REQUEST'
+// const UPDATE_MATERIAL_SUCCESS = 'Material/UPDATE_MATERIAL_SUCCESS'
+// const UPDATE_MATERIAL_FAILURE = 'Material/UPDATE_MATERIAL_FAILURE'
 
 // Initialize State
 const initialState = {
   isLoading: false,
-  productsList: [],
-  products: {},
+  materialList: [],
   error: {},
 }
 
 // Default Reducer
-export default function products(state = initialState, action) {
+export default function material(state = initialState, action) {
   switch (action.type) {
-    case FETCH_PRODUCTS_LIST_REQUEST:
+    case FETCH_MATERIAL_REQUEST:
       return {
         ...state,
         isLoading: true,
       }
-    case FETCH_PRODUCTS_LIST_SUCCESS:
+    case FETCH_MATERIAL_SUCCESS:
       return {
         ...state,
         isLoading: false,
-        productsList: action.payload,
+        materialList: action.payload,
       }
-    case FETCH_PRODUCTS_LIST_FAILURE:
+    case FETCH_MATERIAL_FAILURE:
       return {
         ...state,
         error: action.error,
         isLoading: false,
       }
-    // case FETCH_PRODUCTS_REQUEST:
+    // case CREATE_MATERIAL_REQUEST:
     //   return {
     //     ...state,
     //     isLoading: true
     //   }
-    // case FETCH_PRODUCTS_SUCCESS:
+    // case CREATE_MATERIAL_SUCCESS:
     //   return {
     //     ...state,
-    //     isLoading: false,
-    //     products: action.payload
+    //     isLoading: false
     //   }
-    // case FETCH_PRODUCTS_FAILURE:
+    // case CREATE_MATERIAL_FAILURE:
     //   return {
     //     ...state,
     //     error: action.error,
     //     isLoading: false
     //   }
-    // case CREATE_PRODUCTS_REQUEST:
+    // case UPDATE_MATERIAL_REQUEST:
     //   return {
     //     ...state,
     //     isLoading: true
     //   }
-    // case CREATE_PRODUCTS_SUCCESS:
+    // case UPDATE_MATERIAL_SUCCESS:
     //   return {
     //     ...state,
     //     isLoading: false
     //   }
-    // case CREATE_PRODUCTS_FAILURE:
+    // case UPDATE_MATERIAL_FAILURE:
     //   return {
     //     ...state,
     //     error: action.error,
     //     isLoading: false
     //   }
-    // case UPDATE_PRODUCTS_REQUEST:
+    // case DELETE_MATERIAL_REQUEST:
     //   return {
     //     ...state,
     //     isLoading: true
     //   }
-    // case UPDATE_PRODUCTS_SUCCESS:
+    // case DELETE_MATERIAL_SUCCESS:
     //   return {
     //     ...state,
     //     isLoading: false
     //   }
-    // case UPDATE_PRODUCTS_FAILURE:
-    //   return {
-    //     ...state,
-    //     error: action.error,
-    //     isLoading: false
-    //   }
-    // case DELETE_PRODUCTS_REQUEST:
-    //   return {
-    //     ...state,
-    //     isLoading: true
-    //   }
-    // case DELETE_PRODUCTS_SUCCESS:
-    //   return {
-    //     ...state,
-    //     isLoading: false
-    //   }
-    // case DELETE_PRODUCTS_FAILURE:
+    // case DELETE_MATERIAL_FAILURE:
     //   return {
     //     ...state,
     //     error: action.error,
@@ -122,83 +100,85 @@ export default function products(state = initialState, action) {
 }
 
 // Action Creators
-export const getProductsList = () => {
+export const getMaterialListById = (id) => {
   return async (dispatch) => {
     try {
       dispatch({
-        type: FETCH_PRODUCTS_LIST_REQUEST,
+        type: FETCH_MATERIAL_REQUEST,
       })
 
-      const response = await getData.get(EndPoints.PRODUCTS + `/category`)
+      const response = await getData.get(
+        EndPoints.MATERIAL + `/material-category` + `/${id}`
+      )
       if (response.status === HTTP_STATUS_CODE.OK) {
         dispatch({
-          type: FETCH_PRODUCTS_LIST_SUCCESS,
+          type: FETCH_MATERIAL_SUCCESS,
           payload: response.data,
         })
       }
     } catch (err) {
       dispatch({
-        type: FETCH_PRODUCTS_LIST_FAILURE,
+        type: FETCH_MATERIAL_FAILURE,
       })
     }
   }
 }
 
-// export const getProductsListById = (id) => {
+// export const getMaterialListById = (id) => {
 //   return async (dispatch) => {
 //     try {
 //       dispatch({
-//         type: FETCH_PRODUCTS_REQUEST,
+//         type: FETCH_MATERIAL_REQUEST,
 //       })
 
-//       const response = await getData.get(EndPoints.PRODUCTS + `/${id}`)
+//       const response = await getData.get(EndPoints.MATERIAL + `/${id}`)
 //       if (response.status === HTTP_STATUS_CODE.OK) {
 //         dispatch({
-//           type: FETCH_PRODUCTS_SUCCESS,
+//           type: FETCH_MATERIAL_SUCCESS,
 //           payload: response.data.data,
 //         })
 //       }
 //     } catch (err) {
 //       dispatch({
-//         type: FETCH_PRODUCTS_FAILURE,
+//         type: FETCH_MATERIAL_FAILURE,
 //       })
 //     }
 //   }
 // }
 
-// export const createProducts = (data) => {
+// export const createMaterial = (data) => {
 //   return async (dispatch) => {
 //     try {
 //       dispatch({
-//         type: CREATE_PRODUCTS_REQUEST,
+//         type: CREATE_MATERIAL_REQUEST,
 //       })
 
 //       const config = {
 //         headers: { 'content-type': 'application/json' },
 //       }
 
-//       const response = await getData.post(EndPoints.PRODUCTS, data, config)
+//       const response = await getData.post(EndPoints.MATERIAL, data, config)
 
 //       if (response.status === HTTP_STATUS_CODE.OK) {
 //         dispatch({
-//           type: CREATE_PRODUCTS_SUCCESS,
+//           type: CREATE_MATERIAL_SUCCESS,
 //         })
 //         message.success(RESPONSE_MESSAGE.SUCCESS)
 //       }
 //     } catch (err) {
 //       message.error(RESPONSE_MESSAGE.FAILURE)
 //       dispatch({
-//         type: CREATE_PRODUCTS_FAILURE,
+//         type: CREATE_MATERIAL_FAILURE,
 //       })
 //     }
 //   }
 // }
 
-// export const updateProducts = (id, data) => {
+// export const updateMaterial = (id, data) => {
 //   return async (dispatch) => {
 //     try {
 //       dispatch({
-//         type: UPDATE_PRODUCTS_REQUEST,
+//         type: UPDATE_MATERIAL_REQUEST,
 //       })
 
 //       const config = {
@@ -206,75 +186,75 @@ export const getProductsList = () => {
 //       }
 
 //       const response = await getData.put(
-//         EndPoints.PRODUCTS + `/${id}`,
+//         EndPoints.MATERIAL + `/${id}`,
 //         data,
 //         config
 //       )
 
 //       if (response.status === HTTP_STATUS_CODE.OK) {
 //         dispatch({
-//           type: UPDATE_PRODUCTS_SUCCESS,
+//           type: UPDATE_MATERIAL_SUCCESS,
 //           payload: response.data.data,
 //         })
 //         message.success(RESPONSE_MESSAGE.SUCCESS)
 //       }
 //     } catch (err) {
 //       dispatch({
-//         type: UPDATE_PRODUCTS_FAILURE,
+//         type: UPDATE_MATERIAL_FAILURE,
 //       })
 //       message.success(RESPONSE_MESSAGE.FAILURE)
 //     }
 //   }
 // }
 
-// export const updateActiveProducts = (id, data) => {
+// export const updateActiveMaterial = (id, data) => {
 //   return async (dispatch) => {
 //     try {
 //       dispatch({
-//         type: UPDATE_PRODUCTS_REQUEST,
+//         type: UPDATE_MATERIAL_REQUEST,
 //       })
 //       let formData = { is_active: data }
 
 //       const response = await getData.put(
-//         EndPoints.PRODUCTS + '/active/' + id,
+//         EndPoints.MATERIAL + '/active/' + id,
 //         formData
 //       )
 
 //       if (response.status === HTTP_STATUS_CODE.OK) {
 //         dispatch({
-//           type: UPDATE_PRODUCTS_SUCCESS,
+//           type: UPDATE_MATERIAL_SUCCESS,
 //           payload: response.data.data,
 //         })
 //         message.success(RESPONSE_MESSAGE.SUCCESS)
 //       }
 //     } catch (err) {
 //       dispatch({
-//         type: UPDATE_PRODUCTS_FAILURE,
+//         type: UPDATE_MATERIAL_FAILURE,
 //       })
 //       message.success(RESPONSE_MESSAGE.FAILURE)
 //     }
 //   }
 // }
 
-// export const deleteProducts = (id) => {
+// export const deleteMaterial = (id) => {
 //   return async (dispatch) => {
 //     try {
 //       dispatch({
-//         type: DELETE_PRODUCTS_REQUEST,
+//         type: DELETE_MATERIAL_REQUEST,
 //       })
 
-//       const response = await getData.delete(EndPoints.PRODUCTS + `/${id}`)
+//       const response = await getData.delete(EndPoints.MATERIAL + `/${id}`)
 
 //       if (response.status === HTTP_STATUS_CODE.OK) {
 //         dispatch({
-//           type: DELETE_PRODUCTS_SUCCESS,
+//           type: DELETE_MATERIAL_SUCCESS,
 //         })
 //         message.success(RESPONSE_MESSAGE.SUCCESS)
 //       }
 //     } catch (err) {
 //       message.error(RESPONSE_MESSAGE.FAILURE)
 //       dispatch({
-//         type: DELETE_PRODUCTS_FAILURE,
+//         type: DELETE_MATERIAL_FAILURE,
 //       })
 //     }
 //   }

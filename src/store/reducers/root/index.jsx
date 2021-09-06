@@ -4,6 +4,7 @@ import DocParam from '../docParam.reducer'
 import Auth from '../auth.reducer'
 import Boxes from '../boxes.reducer'
 import Products from '../product.reducer'
+import Material from '../material.reducer'
 
 export default combineReducers({
   main: Main,
@@ -11,4 +12,5 @@ export default combineReducers({
   auth: Auth,
   boxes: Boxes,
   products: Products,
+  material: Material,
 })

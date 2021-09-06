@@ -1,15 +1,15 @@
 const SET_PRODUCT_NAME = 'Main/SET_PRODUCT_NAME'
-const SET_RES_MATERIAL_NAME = 'Main/SET_RES_MATERIAL_NAME'
-const SET_RES_PAPER_NAME = 'Main/SET_RES_PAPER_NAME'
-const SET_RES_ENAMEL_NAME = 'Main/SET_RES_ENAMEL_NAME'
-const SET_RES_PRINTER_NAME = 'Main/SET_RES_PRINTER_NAME'
+const SET_MATERIAL_NAME = 'Main/SET_MATERIAL_NAME'
+const SET_PAPER_NAME = 'Main/SET_PAPER_NAME'
+const SET_ENAMEL_NAME = 'Main/SET_ENAMEL_NAME'
+const SET_PRINTER_NAME = 'Main/SET_PRINTER_NAME'
 
 const initialState = {
-  productName: '',
-  resMaterialName: [],
-  resPaperName: [],
-  resEnamelName: [],
-  resPrinterName: [],
+  productName: [],
+  materialName: [],
+  paperName: [],
+  enamelName: [],
+  printerName: [],
 }
 
 export default function Main(state = initialState, action) {
@@ -19,25 +19,25 @@ export default function Main(state = initialState, action) {
         ...state,
         productName: action.payload,
       }
-    case SET_RES_MATERIAL_NAME:
+    case SET_MATERIAL_NAME:
       return {
         ...state,
-        resMaterialName: action.payload,
+        materialName: action.payload,
       }
-    case SET_RES_PAPER_NAME:
+    case SET_PAPER_NAME:
       return {
         ...state,
-        resPaperName: action.payload,
+        paperName: action.payload,
       }
-    case SET_RES_ENAMEL_NAME:
+    case SET_ENAMEL_NAME:
       return {
         ...state,
-        resEnamelName: action.payload,
+        enamelName: action.payload,
       }
-    case SET_RES_PRINTER_NAME:
+    case SET_PRINTER_NAME:
       return {
         ...state,
-        resPrinterName: action.payload,
+        printerName: action.payload,
       }
     default:
       return state
@@ -53,37 +53,37 @@ export const setProductName = (data) => {
   }
 }
 
-export const setResMaterialName = (data) => {
+export const setMaterialName = (data) => {
   return async (dispatch) => {
     dispatch({
-      type: SET_RES_MATERIAL_NAME,
+      type: SET_MATERIAL_NAME,
       payload: data,
     })
   }
 }
 
-export const setResPaperName = (data) => {
+export const setPaperName = (data) => {
   return async (dispatch) => {
     dispatch({
-      type: SET_RES_PAPER_NAME,
+      type: SET_PAPER_NAME,
       payload: data,
     })
   }
 }
 
-export const setResEnamelName = (data) => {
+export const setEnamelName = (data) => {
   return async (dispatch) => {
     dispatch({
-      type: SET_RES_ENAMEL_NAME,
+      type: SET_ENAMEL_NAME,
       payload: data,
     })
   }
 }
 
-export const setResPrinterName = (data) => {
+export const setPrinterName = (data) => {
   return async (dispatch) => {
     dispatch({
-      type: SET_RES_PRINTER_NAME,
+      type: SET_PRINTER_NAME,
       payload: data,
     })
   }
