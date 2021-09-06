@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { InputNumber } from 'antd'
-import { setProductName, setMaterialName } from '../store/reducers/main.reducer'
 import {
   setA,
   setB,
@@ -18,7 +17,6 @@ import TUCK_END_BOXES_MAIN from './boxes/tuckEndBoxes/main'
 const Part2ModalBody = (props) => {
   const { SentStateJsonOffer } = props
   const dispatch = useDispatch()
-  const { productName, materialName } = useSelector((state) => state.main)
   const { productsList } = useSelector((state) => state.products)
   const { materialList } = useSelector((state) => state.material)
   const { A, B, C, F, P, unit } = useSelector((state) => state.boxes)
@@ -45,22 +43,19 @@ const Part2ModalBody = (props) => {
   useEffect(() => {
     const getProductName = async () => {
       await dispatch(getProductsList())
-      const result = productsList.map(({ name }) => name)
-      dispatch(setProductName(result))
     }
     getProductName()
-  }, [])
+  }, [dispatch])
+
+  const getMaterialName = async (e) => {
+    if (+e.target.value === 1) {
+      await dispatch(getMaterialListById(+e.target.value))
+    }
+  }
 
   useEffect(() => {
     Dieline ? dispatch(setLayout(Dieline)) : dispatch(setLayout(Dieline))
-  }, [Dieline])
-
-  const getMaterialName = async (e) => {
-    const id = +e.target.value + 1
-    if (id === 1) {
-      await dispatch(getMaterialListById(id))
-    }
-  }
+  }, [Dieline, dispatch])
 
   const handleChangeSize = (value, type) => {
     switch (type) {
@@ -176,11 +171,13 @@ const Part2ModalBody = (props) => {
                 <option selected disabled>
                   เลือกสินค้า
                 </option>
-                {productName.map((name, index) => (
-                  <option key={name} value={index}>
-                    {name}
-                  </option>
-                ))}
+                {productsList.map(({ name, index }) => {
+                  return (
+                    <option key={null} value={index}>
+                      {name}
+                    </option>
+                  )
+                })}
               </select>
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 รูปแบบสินค้า:
@@ -189,9 +186,7 @@ const Part2ModalBody = (props) => {
                 <option selected disabled>
                   เลือกรูปแบบสินค้า
                 </option>
-                {materialList.map((item) => {
-                  return <option>{item.name}</option>
-                })}
+                <option>{materialList.name}</option>)
               </select>
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 ประเภทกระดาษ:
