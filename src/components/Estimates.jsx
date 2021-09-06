@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { InputNumber } from 'antd'
-import {
-  setResProductName,
-  setResMaterialName,
-  setResPaperName,
-  setResEnamelName,
-} from '../store/reducers/main.reducer'
+import { setProductName } from '../store/reducers/main.reducer'
 import {
   setA,
   setB,
@@ -17,12 +12,6 @@ import {
   setLayout,
 } from '../store/reducers/boxes.reducer'
 import { getProductsList } from '../store/reducers/product.reducer'
-import {
-  GET_PRODUCT_CATEGORY,
-  GET_MATERIAL_CATEGORY,
-  GET_PAPER_LIST,
-  GET_ENAMEL_LIST,
-} from '../../pages/api/getData.api'
 import { enamelSelect } from '../utils/handingData'
 import TUCK_END_BOXES_MAIN from './boxes/tuckEndBoxes/main'
 
@@ -30,19 +19,14 @@ const Part2ModalBody = (props) => {
   const { SentStateJsonOffer } = props
   const dispatch = useDispatch()
 
-  const { resMaterialName, resPaperName, resEnamelName } = useSelector(
-    (state) => state.main
-  )
+  const { productName } = useSelector((state) => state.main)
   const { productsList, isLoading } = useSelector((state) => state.products)
-  const { token } = useSelector((state) => state.auth)
   const { A, B, C, F, P, unit } = useSelector((state) => state.boxes)
 
   const [OutSide, SetOutSide] = useState(true)
   const [Dieline, SetDieline] = useState(true)
   const [UVPrinting, SetUVPrinting] = useState(false)
   const [Foiling, SetFoiling] = useState(false)
-  const [materialName, setMaterialName] = useState()
-  const [paperName, setPaperName] = useState()
   const [, setPrevUnit] = useState('mm')
 
   const defaultUnit = { mm: 1, cm: 10, inch: 25.4 }
@@ -61,79 +45,17 @@ const Part2ModalBody = (props) => {
   })
 
   useEffect(() => {
-    //? สินค้า
-    const fetchData = async () => {
+    const getProductName = async () => {
       await dispatch(getProductsList())
+      const result = productsList.map(({ name }) => name)
+      dispatch(setProductName(result))
     }
-    fetchData()
-  }, [dispatch])
-
-  useEffect(() => {
-    //? สินค้า
-    const getProductFormDB = async () => {
-      const product = await GET_PRODUCT_CATEGORY(token)
-      const productAll = product.map(({ name }) => name)
-      dispatch(setResProductName(productAll))
-    }
-    getProductFormDB()
-
-    //? รูปแบบสินค้า
-    const getMaterialFormDB = async () => {
-      const material = await GET_MATERIAL_CATEGORY(token)
-      const materialAll = material.map(({ name }) => name)
-      dispatch(setResMaterialName(materialAll))
-    }
-    getMaterialFormDB()
-
-    //? ประเภทกระดาษ
-    const getPaperFormDB = async () => {
-      const paper = await GET_PAPER_LIST(token)
-      const paperAll = paper.map(({ name }) => name)
-      dispatch(setResPaperName(paperAll))
-    }
-    getPaperFormDB()
-
-    //? การเคลือบ
-    const getEnamelFormDB = async () => {
-      const enamel = await GET_ENAMEL_LIST(token)
-      const enamelAll = enamel.map(({ enamels_name }) => enamels_name)
-      dispatch(setResEnamelName(enamelAll))
-    }
-    getEnamelFormDB()
-  }, [dispatch, token])
+    getProductName()
+  }, [dispatch, productsList])
 
   useEffect(() => {
     Dieline ? dispatch(setLayout(Dieline)) : dispatch(setLayout(Dieline))
   }, [Dieline, dispatch])
-
-  const product = (resProductName) => {
-    const dataButton = resProductName.map((response, index) => (
-      <option key={''} value={index}>
-        {response}
-      </option>
-    ))
-    return dataButton
-  }
-
-  const material = (e) => {
-    if (e.target.value === '0') {
-      const dataButton = resMaterialName.map((response, index) => (
-        <option key={''} value={index}>
-          {response}
-        </option>
-      ))
-      setMaterialName(dataButton)
-    }
-  }
-
-  const paper = (e) => {
-    if (e.target.value === '0') {
-      const dataButton = resPaperName.map((name) => (
-        <option key={''}>{name}</option>
-      ))
-      setPaperName(dataButton)
-    }
-  }
 
   const handleChangeSize = (value, type) => {
     switch (type) {
@@ -238,33 +160,26 @@ const Part2ModalBody = (props) => {
               <label className="mt-4">สเปกสินค้า</label>
             </div>
             <div className="grid  gap-4 grid-cols-3 spec-product">
-              {/* //? เลือกสินค้า */}
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 สินค้า:
               </span>
               <select
                 className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
-                onChange={material}
+                placeHolder="เลือกสินค้า"
               >
                 <option selected disabled>
                   เลือกสินค้า
                 </option>
-                {product(resProductName)}
+                <option>{productName}</option>
               </select>
-              {/* //? รูปแบบสินค้า */}
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 รูปแบบสินค้า:
               </span>
-              <select
-                className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
-                onChange={paper}
-              >
+              <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
                 <option selected disabled>
                   เลือกรูปแบบสินค้า
                 </option>
-                {materialName}
               </select>
-              {/* //? ประเภทกระดาษ */}
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 ประเภทกระดาษ:
               </span>
@@ -272,7 +187,6 @@ const Part2ModalBody = (props) => {
                 <option selected disabled>
                   เลือกประเภทกระดาษ
                 </option>
-                {paperName}
               </select>
             </div>
           </div>
@@ -530,9 +444,7 @@ const Part2ModalBody = (props) => {
                   <tbody>
                     <tr>
                       <td className="t1">การเคลือบ</td>
-                      <td colSpan="4" className="t2">
-                        {enamelSelect(resEnamelName)}
-                      </td>
+                      <td colSpan="4" className="t2"></td>
                     </tr>
                     <tr>
                       <td className="t1">SPOT UV</td>

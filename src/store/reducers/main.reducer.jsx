@@ -1,11 +1,11 @@
-const SET_RES_PRODUCT_NAME = 'Main/SET_RES_PRODUCT_NAME'
+const SET_PRODUCT_NAME = 'Main/SET_PRODUCT_NAME'
 const SET_RES_MATERIAL_NAME = 'Main/SET_RES_MATERIAL_NAME'
 const SET_RES_PAPER_NAME = 'Main/SET_RES_PAPER_NAME'
 const SET_RES_ENAMEL_NAME = 'Main/SET_RES_ENAMEL_NAME'
 const SET_RES_PRINTER_NAME = 'Main/SET_RES_PRINTER_NAME'
 
 const initialState = {
-  resProductName: [],
+  productName: '',
   resMaterialName: [],
   resPaperName: [],
   resEnamelName: [],
@@ -14,10 +14,10 @@ const initialState = {
 
 export default function Main(state = initialState, action) {
   switch (action.type) {
-    case SET_RES_PRODUCT_NAME:
+    case SET_PRODUCT_NAME:
       return {
         ...state,
-        resProductName: action.payload,
+        productName: action.payload,
       }
     case SET_RES_MATERIAL_NAME:
       return {
@@ -44,10 +44,10 @@ export default function Main(state = initialState, action) {
   }
 }
 
-export const setResProductName = (data) => {
+export const setProductName = (data) => {
   return async (dispatch) => {
     dispatch({
-      type: SET_RES_PRODUCT_NAME,
+      type: SET_PRODUCT_NAME,
       payload: data,
     })
   }
