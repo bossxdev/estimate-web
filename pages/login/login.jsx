@@ -3,7 +3,7 @@ import { LoginLayout } from '../../styles/index.style'
 import { Card, Col, Row, Form, Input, Checkbox, Button } from 'antd'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
-import { login } from '../../src/store/reducers/auth.reducer'
+import { login } from '../../src/store/reducers/AuthReducer'
 import Cookies from 'js-cookie'
 
 export default function Login() {
@@ -13,7 +13,7 @@ export default function Login() {
     const data = {
       username: values.username,
       password: values.password,
-      program: 'HR'
+      program: 'HR',
     }
     await dispatch(login(data))
     const token = Cookies.get('token')

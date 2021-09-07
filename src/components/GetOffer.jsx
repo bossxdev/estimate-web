@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useSelector, useDispatch } from 'react-redux'
 import { InputNumber, Modal } from 'antd'
-import { setDocOffer } from '../store/reducers/docParam.reducer'
+import { setDocOffer } from '../store/reducers/DocParamReducer'
 import {
   setResProductName,
   setResMaterialName,
   setResPaperName,
   setResEnamelName,
   setResPrinterName,
-} from '../store/reducers/main.reducer'
+} from '../store/reducers/MainReducer'
 import {
   setA,
   setB,
@@ -18,21 +18,21 @@ import {
   setP,
   setUnit,
   setLayout,
-} from '../store/reducers/boxes.reducer'
+} from '../store/reducers/BoxesReducer'
 import {
   setPaper,
   setPrinter,
   setOrderGroup,
-} from '../store/reducers/docParam.reducer'
+} from '../store/reducers/DocParamReducer'
 import {
   GET_PRODUCT_CATEGORY,
   GET_MATERIAL_CATEGORY,
   GET_PAPER_LIST,
   GET_ENAMEL_LIST,
   GET_PRINTER_NAME,
-} from '../../pages/api/getData.api'
-import { paperSelect, enamelSelect } from '../utils/handingData'
-import TUCK_END_BOXES_MAIN from './boxes/tuckEndBoxes/main'
+} from '../../pages/api/GetData'
+import { paperSelect, enamelSelect } from '../utils/HandingData'
+import TUCK_END_BOXES_MAIN from './boxes/tuckEndBoxes'
 import DataTable from './DataTable'
 
 export default function GetOffer() {

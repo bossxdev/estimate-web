@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
-import { setDocOffer } from '../store/reducers/docParam.reducer'
+import { setDocOffer } from '../store/reducers/DocParamReducer'
 import PostData from '../../process.json'
 import axios from 'axios'
 import DataTable from './DataTable'
-import Estimates from './Estimates'
+import Estimates from './estimates/Estimate'
 
 export default function IndexPage() {
   const router = useRouter()
@@ -145,37 +145,39 @@ export default function IndexPage() {
   const GetNewDoc = (GetDoc) => {
     if (Number(EditOldLeft.length) === 0) {
       PostApi(GetDoc)
-    } else {
-      axios
-        .put('http://localhost:4200/process' + GetDoc[0].รหัสเอกสาร, {
-          วันที่: GetDoc[0].วันที่,
-          ลูกค้า: GetDoc[0].ลูกค้า,
-          สถานะลูกค้า: GetDoc[0].สถานะลูกค้า,
-          ผู้ขอเอกสาร: GetDoc[0].ผู้ออกเอกสาร,
-        })
-        .then(() => {
-          GetApi(DocProcess)
-        })
     }
+    // else {
+    //   axios
+    //     .put('http://localhost:4200/process' + GetDoc[0].รหัสเอกสาร, {
+    //       วันที่: GetDoc[0].วันที่,
+    //       ลูกค้า: GetDoc[0].ลูกค้า,
+    //       สถานะลูกค้า: GetDoc[0].สถานะลูกค้า,
+    //       ผู้ขอเอกสาร: GetDoc[0].ผู้ออกเอกสาร,
+    //     })
+    //     .then(() => {
+    //       GetApi(DocProcess)
+    //     })
+    // }
   }
 
   const PostApi = (GetDoc) => {
-    axios
-      .post('http://localhost:4200/process', {
-        วันที่: GetDoc[0].วันที่,
-        id: GetDoc[0].รหัสเอกสาร,
-        รายละเอียด: 'กล่องกระดาษแข็ง กล่องผ่าเสียบ ก้นเสียบ',
-        ลูกค้า: GetDoc[0].ลูกค้า,
-        สถานะลูกค้า: GetDoc[0].สถานะลูกค้า,
-        จำนวนงาน: '200',
-        ผู้ขอเอกสาร: GetDoc[0].ผู้ออกเอกสาร,
-        ฝ่ายผู้ขอเอกสาร: 'ฝ่ายขาย',
-        ผู้เสนอราคา: 'เกี๊ยวน้ำเปล่า แต่ไม่เค็ม',
-        ฝ่ายผู้เสนอราคา: 'CEO',
-      })
-      .then(() => {
-        GetApi(DocProcess)
-      })
+    GetApi(DocProcess)
+    // axios
+    //   .post('http://localhost:4200/process', {
+    //     วันที่: GetDoc[0].วันที่,
+    //     id: GetDoc[0].รหัสเอกสาร,
+    //     รายละเอียด: 'กล่องกระดาษแข็ง กล่องผ่าเสียบ ก้นเสียบ',
+    //     ลูกค้า: GetDoc[0].ลูกค้า,
+    //     สถานะลูกค้า: GetDoc[0].สถานะลูกค้า,
+    //     จำนวนงาน: '200',
+    //     ผู้ขอเอกสาร: GetDoc[0].ผู้ออกเอกสาร,
+    //     ฝ่ายผู้ขอเอกสาร: 'ฝ่ายขาย',
+    //     ผู้เสนอราคา: 'เกี๊ยวน้ำเปล่า แต่ไม่เค็ม',
+    //     ฝ่ายผู้เสนอราคา: 'CEO',
+    //   })
+    //   .then(() => {
+    //     GetApi(DocProcess)
+    //   })
   }
 
   const ClickMyOffer = (e) => {

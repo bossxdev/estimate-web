@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import { useSelector, useDispatch } from 'react-redux'
-import { setDocCallPage } from '../store/reducers/docParam.reducer'
+import { setDocCallPage } from '../store/reducers/DocParamReducer'
 
 export default function CallPage() {
   const router = useRouter()

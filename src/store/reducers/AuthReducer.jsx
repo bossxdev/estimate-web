@@ -1,7 +1,7 @@
-import API from '../../../pages/api/http'
+import API from '../../../pages/api/Http'
 import Cookies from 'js-cookie'
-import * as EndPoints from '../../../pages/api/endPoints'
-import { HTTP_STATUS_CODE } from '../../utils/constants'
+import * as EndPoints from '../../../pages/api/EndPoints'
+import { HTTP_STATUS_CODE } from '../../utils/Constants'
 import { message } from 'antd'
 
 const LOGIN_REQUEST = 'Auth/LOGIN_REQUEST'

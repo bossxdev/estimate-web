@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import PARTS from '../_module/parts'
+import PARTS from '../_module/Parts'
 
 class main_box {
   constructor(

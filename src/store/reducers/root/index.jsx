@@ -1,13 +1,11 @@
 import { combineReducers } from 'redux'
-import Main from '../main.reducer'
-import DocParam from '../docParam.reducer'
-import Auth from '../auth.reducer'
-import Boxes from '../boxes.reducer'
-import Products from '../product.reducer'
-import Material from '../material.reducer'
+import DocParam from '../DocParamReducer'
+import Auth from '../AuthReducer'
+import Boxes from '../BoxesReducer'
+import Products from '../ProductReducer'
+import Material from '../MaterialReducer'
 
 export default combineReducers({
-  main: Main,
   docParam: DocParam,
   auth: Auth,
   boxes: Boxes,

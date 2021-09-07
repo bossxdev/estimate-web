@@ -9,23 +9,23 @@ import {
   setP,
   setUnit,
   setLayout,
-} from '../store/reducers/boxes.reducer'
-import { getProductsList } from '../store/reducers/product.reducer'
-import { getMaterialListById } from '../store/reducers/material.reducer'
-import TUCK_END_BOXES_MAIN from './boxes/tuckEndBoxes/main'
+} from '../../store/reducers/BoxesReducer'
+import { getProductsList } from '../../store/reducers/ProductReducer'
+import {
+  getMaterialListById,
+  getPaperCategoryList,
+} from '../../store/reducers/MaterialReducer'
+import TUCK_END_BOXES_MAIN from '../boxes/tuckEndBoxes/Index'
 
-const Part2ModalBody = (props) => {
-  const { SentStateJsonOffer } = props
+export default function PartBodyEstimate(props) {
   const dispatch = useDispatch()
+  const { SentStateJsonOffer, GetWhenSendDoc } = props
   const { productsList } = useSelector((state) => state.products)
-  const { materialList } = useSelector((state) => state.material)
-  const { A, B, C, F, P, unit } = useSelector((state) => state.boxes)
+  const { material, paperCategoryList } = useSelector((state) => state.material)
+  const { A, B, C, F, P, unit, layout } = useSelector((state) => state.boxes)
   const [OutSide, SetOutSide] = useState(true)
-  const [Dieline, SetDieline] = useState(true)
   const [UVPrinting, SetUVPrinting] = useState(false)
   const [Foiling, SetFoiling] = useState(false)
-  const [, setPrevUnit] = useState('mm')
-  const defaultUnit = { mm: 1, cm: 10, inch: 25.4 }
   const [orderGroup, setOrderGroup] = useState({
     key: 'ordergroup',
     default: {
@@ -39,13 +39,15 @@ const Part2ModalBody = (props) => {
       amount8: 0,
     },
   })
+  const [, setPrevUnit] = useState('mm')
+  const defaultUnit = { mm: 1, cm: 10, inch: 25.4 }
 
   useEffect(() => {
     const getProductName = async () => {
       await dispatch(getProductsList())
     }
     getProductName()
-  }, [dispatch])
+  }, [])
 
   const getMaterialName = async (e) => {
     if (+e.target.value === 1) {
@@ -53,9 +55,12 @@ const Part2ModalBody = (props) => {
     }
   }
 
-  useEffect(() => {
-    Dieline ? dispatch(setLayout(Dieline)) : dispatch(setLayout(Dieline))
-  }, [Dieline, dispatch])
+  const getPaperCategoryName = async () => {
+    await dispatch(getPaperCategoryList())
+  }
+
+  const getPaperName = async (e) => {
+  }
 
   const handleChangeSize = (value, type) => {
     switch (type) {
@@ -119,18 +124,6 @@ const Part2ModalBody = (props) => {
     }
   }
 
-  const selectUnit = () => (
-    <select
-      className="border rounded px-2 py-2 focus:outline-none"
-      value={unit}
-      onChange={handleCheckUnit}
-    >
-      <option value="mm">mm</option>
-      <option value="cm">cm</option>
-      <option value="inch">inch</option>
-    </select>
-  )
-
   const FX_More_One = (e) => {
     let GetClass = e.target.className
 
@@ -182,18 +175,39 @@ const Part2ModalBody = (props) => {
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 รูปแบบสินค้า:
               </span>
-              <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
+              <select
+                className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
+                onChange={getPaperCategoryName}
+              >
                 <option selected disabled>
                   เลือกรูปแบบสินค้า
                 </option>
-                <option>{materialList.name}</option>)
+                <option value={material.index}>{material.name}</option>
               </select>
               <span className="col-span-1 text-gray-800 text-look-product-show">
                 ประเภทกระดาษ:
               </span>
-              <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
+              <select
+                className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx"
+                onChange={getPaperName}
+              >
                 <option selected disabled>
                   เลือกประเภทกระดาษ
+                </option>
+                {paperCategoryList.map(({ name, index }) => {
+                  return (
+                    <option key={null} value={index}>
+                      {name}
+                    </option>
+                  )
+                })}
+              </select>
+              <span className="col-span-1 text-gray-800 text-look-product-show">
+                กระดาษ:
+              </span>
+              <select className="col-span-2  float-right border rounded px-2 py-2 focus:outline-none input-fx">
+                <option selected disabled>
+                  เลือกกระดาษ
                 </option>
               </select>
             </div>
@@ -205,7 +219,15 @@ const Part2ModalBody = (props) => {
               </div>
               <div className="font-semibold lg:p-3 float-right bg-head">
                 <span className="text-white">เลือกหน่วย:</span>
-                {selectUnit()}
+                <select
+                  className="border rounded px-2 py-2 focus:outline-none"
+                  value={unit}
+                  onChange={handleCheckUnit}
+                >
+                  <option value="mm">mm</option>
+                  <option value="cm">cm</option>
+                  <option value="inch">inch</option>
+                </select>
               </div>
             </div>
             <div className="grid gap-4 lg:grid-cols-2 na-ja">
@@ -739,21 +761,29 @@ const Part2ModalBody = (props) => {
                 <br />
                 <div className="both-btn2d">
                   <button
-                    onClick={() => (Dieline ? null : SetDieline(true))}
-                    className={Dieline ? 'btn-2d active' : 'btn-2d'}
+                    onClick={() => dispatch(setLayout(true))}
+                    className={layout ? 'btn-2d active' : 'btn-2d'}
                   >
                     2D
                   </button>
                   <button
-                    onClick={() => (Dieline ? SetDieline(false) : null)}
-                    className={Dieline ? 'btn-dieline' : 'btn-dieline active'}
+                    onClick={() => dispatch(setLayout(false))}
+                    className={layout ? 'btn-dieline' : 'btn-dieline active'}
                   >
                     Dieline
                   </button>
                 </div>
               </div>
               <div className="col-span-3 lg:col-span-2">
-                <TUCK_END_BOXES_MAIN />
+                {layout ? (
+                  <img
+                    className="box-pic01"
+                    src="https://www.img.in.th/images/e3a0d7d949e2459292f771fa1e7581c3.png"
+                    alt="1"
+                  />
+                ) : (
+                  <TUCK_END_BOXES_MAIN />
+                )}
               </div>
             </div>
             <div className="border-gray-300 border rounded-sm mt-3">
@@ -946,7 +976,7 @@ const Part2ModalBody = (props) => {
           ยกเลิก
         </button>
         <button
-          onClick={() => props.GetWhenSendDoc(SentStateJsonOffer)}
+          onClick={() => GetWhenSendDoc(SentStateJsonOffer)}
           id="cancel-modal-na-ja"
           className="float-right custom-05 mt-2 inline-block hover:text-white focus:outline-none focus:text-white  hover:bg-blue-dark font-bold py-2 px-3 rounded-sm hover:bg-indigo-500 transition ease-in-out duration-300"
         >
@@ -954,271 +984,5 @@ const Part2ModalBody = (props) => {
         </button>
       </div>
     </div>
-  )
-}
-
-const TheModalEstimate = (props) => {
-  const { SendDataValue, WhenSendDoc } = props
-  const [CountDocNumber, SetCountDocNumber] = useState(
-    String(Number(SendDataValue.รหัสเอกสาร) + 1)
-  )
-  const [NameClient, SetNameClient] = useState('')
-  const [ClientType, SetClientType] = useState('ลุกค้าเก่า')
-  const Digit = Number(String(Number(SendDataValue.รหัสเอกสาร) + 1).length) - 1
-  let OurDate = new Date()
-  let TheDay =
-    String(OurDate.getDate()).length !== 1
-      ? OurDate.getDate()
-      : '0' + String(OurDate.getDate())
-  let TheMonth =
-    String(OurDate.getMonth() + 1).length !== 1
-      ? OurDate.getMonth() + 1
-      : '0' + String(OurDate.getMonth() + 1)
-  const GetDate =
-    String(SendDataValue.วันที่) === ''
-      ? String(TheDay + '/' + TheMonth + '/' + OurDate.getFullYear())
-      : String(SendDataValue.วันที่)
-  const GetTime = String(
-    OurDate.getHours() + ':' + OurDate.getMinutes() + ' น.'
-  )
-  const OurSale = SendDataValue.ผู้ขอเอกสาร
-
-  useEffect(() => {
-    let GetLastStr = '00000' + String(CountDocNumber)
-    SetCountDocNumber(GetLastStr.substr(GetLastStr.length - Number(14 - Digit)))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const AfterInsideModal = (e) => {
-    props.SendFunc(e.target.id)
-    props.SendFxExitEdit(e.target.id)
-  }
-
-  const ClientChange = (e) => {
-    let GetClientType = e.target.value
-    SetClientType(GetClientType)
-  }
-
-  return (
-    <>
-      <div
-        id="ModalEstimateLV01"
-        onClick={AfterInsideModal}
-        className="bg-blue-400 custom-01"
-      >
-        <div id="ModalEstimateLV02" className="custom-02 bg-white">
-          <div className="custom-04">
-            <label>เอกสารขอราคา</label>
-            <span
-              id="font-closed"
-              className="cursor-pointer float-right text-white hover:text-gray-500 text-4xl"
-            >
-              &#10006;
-            </span>
-          </div>
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <div className="pt-11 pb-5 pl-11">
-              <label className="code-label-forward">
-                รหัสเอกสารขอราคา : {CountDocNumber}
-              </label>
-            </div>
-            <div>
-              <div className="grid grid-cols-8 gap-4 mt-4">
-                <div className="lg:col-span-3 col-span-1"></div>
-                <div className="lg:col-span-2 col-span-3 mt-4 ml-2 offer-sale">
-                  ผู้จัดทำใบขอราคา:
-                </div>
-                <div className="col-span-1">
-                  <img
-                    className="block m-auto rounded-full pic-sale"
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqelGYhDyC4P6HBYqGPsFxmtRFnDGEota1fg&usqp=CAU"
-                    alt="1"
-                  />
-                </div>
-                <div className="lg:col-span-2 col-span-3 name-sale mt-1">
-                  {OurSale}
-                  <br />
-                  <label className="ball-sale">
-                    {SendDataValue.ฝ่ายผู้ขอเอกสาร}
-                  </label>
-                </div>
-              </div>
-              <div className="grid grid-cols-8 gap-4 mt-4">
-                <div className="col-span-3"></div>
-                <div className="col-span-5 ml-2">
-                  <label className="offer-sale">วันที่ออกเอกสาร:</label>
-                  <label className="ml-4 name-sale">{GetDate}</label>
-                  <label className="offer-sale ml-2">เวลา:</label>
-                  <label className="name-sale">{GetTime}</label>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="border-gray-300 border rounded-md lg:p-5 p-1 bg-white m-1 lg:ml-6 lg:mr-6">
-            <h3 className="product-value-ok">ข้อมูลสินค้า</h3>
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <div>
-                <div className="font-semibold p-2">
-                  <span className="text-gray-800 label-ft">ลูกค้า:</span>
-                  <input
-                    defaultValue={SendDataValue.ลูกค้า}
-                    onChange={(e) => SetNameClient(e.target.value)}
-                    type="text"
-                    className="lg:w-5/6 w-4/6 float-right focus:outline-none border rounded px-2 py-1 input-fx"
-                  />
-                </div>
-                <div className="font-semibold p-2">
-                  <span className="text-gray-800 label-ft">เบอร์โทรศัพท์:</span>
-                  <input
-                    type="text"
-                    className="lg:w-5/6 w-4/6 float-right focus:outline-none border rounded px-2 py-1 input-fx"
-                  />
-                </div>
-                <div className="font-semibold p-2">
-                  <span className="text-gray-800 label-ft">อีเมล์:</span>
-                  <input
-                    type="text"
-                    className="lg:w-5/6 w-4/6 float-right focus:outline-none border rounded px-2 py-1 input-fx"
-                  />
-                </div>
-                <div className="font-semibold p-2">
-                  <span className="text-gray-800 label-ft">ที่อยู่:</span>
-                  <textarea
-                    type="text"
-                    rows="3"
-                    className="lg:w-5/6 w-4/6 float-right focus:outline-none border rounded px-2 py-1 input-fx"
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="font-semibold p-2">
-                  <span className="text-gray-800 label-ft">ผู้ติดต่อ:</span>
-                  <input
-                    type="text"
-                    className="lg:w-5/6 w-4/6 float-right focus:outline-none border rounded px-2 py-1 input-fx"
-                  />
-                </div>
-                <div className="font-semibold p-2">
-                  <span className="text-gray-800 label-ft">เบอร์แฟกซ์:</span>
-                  <input
-                    type="text"
-                    className="lg:w-5/6 w-4/6 float-right focus:outline-none border rounded px-2 py-1 input-fx"
-                  />
-                </div>
-                <div className="font-semibold p-2">
-                  <span className="text-gray-800 label-ft">
-                    เลขผู้เสียภาษี:
-                  </span>
-                  <input
-                    type="text"
-                    className="lg:w-5/6 w-4/6 float-right focus:outline-none border rounded px-2 py-1 input-fx"
-                  />
-                </div>
-                <div className="font-semibold p-2">
-                  <span className="text-gray-800 label-ft">ประเภทลูกค้า:</span>
-                  <select
-                    onChange={ClientChange}
-                    className="lg:w-5/6 w-4/6 border float-right rounded px-2 py-2 focus:outline-none input-fx"
-                  >
-                    <option>ลูกค้าเก่า</option>
-                    <option>ลูกค้าใหม่</option>
-                  </select>
-                </div>
-                <div className="font-semibold p-2 mt-4">
-                  <span className="text-gray-800 label-ft mr-6">Status</span>
-                  <button className="custom-05 ml-10 inline-block hover:text-white focus:outline-none focus:text-white  hover:bg-blue-dark font-bold py-2 px-3 rounded-lg hover:bg-indigo-500 transition ease-in-out duration-300">
-                    Offline
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <Part2ModalBody
-            SentStateJsonOffer={[
-              {
-                วันที่: GetDate,
-                รหัสเอกสาร: String(Number(SendDataValue.รหัสเอกสาร) + 1),
-                รายละเอียด: '',
-                ลูกค้า: NameClient,
-                สถานะลูกค้า: ClientType,
-                จำนวนงาน: '',
-                ผู้ออกเอกสาร: OurSale,
-              },
-            ]}
-            GetWhenSendDoc={WhenSendDoc}
-          />
-        </div>
-      </div>
-    </>
-  )
-}
-
-export default function Estimates(props) {
-  const { SendModeEditer, SentJsonDataToModal, SentFunctionGetDoc } = props
-  const [StatusModalEstimate, SetStatusModalEstimate] = useState(false)
-
-  let TheEdit =
-    Number(SendModeEditer[0].length) === 1
-      ? [
-          {
-            วันที่: SendModeEditer[0][0].วันที่,
-            รหัสเอกสาร: Number(SendModeEditer[0][0].id) - 1,
-            รายละเอียด: SendModeEditer[0][0].รายละเอียด,
-            ลูกค้า: SendModeEditer[0][0].ลูกค้า,
-            สถานะลูกค้า: SendModeEditer[0][0].สถานะลูกค้า,
-            จำนวนงาน: SendModeEditer[0][0].จำนวนงาน,
-            ผู้ขอเอกสาร: String(SendModeEditer[0][0].ผู้ขอเอกสาร),
-            ฝ่ายผู้ขอเอกสาร: SendModeEditer[0][0].ฝ่ายผู้ขอเอกสาร,
-            ผู้เสนอราคา: SendModeEditer[0][0].ผู้เสนอราคาม,
-            ฝ่ายผู้เสนอเอกสาร: SendModeEditer[0][0].ฝ่ายผู้เสนอเอกสาร,
-          },
-        ]
-      : [
-          {
-            วันที่: '',
-            รหัสเอกสาร: SentJsonDataToModal[0],
-            รายละเอียด: '',
-            ลูกค้า: '',
-            สถานะลูกค้า: '',
-            จำนวนงาน: '',
-            ผู้ขอเอกสาร: SentJsonDataToModal[1],
-            ฝ่ายผู้ขอเอกสาร: 'ฝ่ายขาย',
-            ผู้เสนอราคา: '',
-            ฝ่ายผู้เสนอเอกสาร: '',
-          },
-        ]
-
-  const WhenStayInModal = (GetID) => {
-    if (
-      String(GetID) === 'ModalEstimateLV01' ||
-      String(GetID) === 'font-closed' ||
-      String(GetID) === 'cancel-modal-na-ja'
-    )
-      SetStatusModalEstimate(false)
-  }
-
-  const ClickToInModalEstimate = () => {
-    StatusModalEstimate
-      ? SetStatusModalEstimate(false)
-      : SetStatusModalEstimate(true)
-  }
-
-  return (
-    <>
-      {StatusModalEstimate || Number(SendModeEditer[0].length) === 1 ? (
-        <TheModalEstimate
-          WhenSendDoc={SentFunctionGetDoc}
-          SendFxExitEdit={SendModeEditer[1]}
-          SendDataValue={TheEdit[0]}
-          SendFunc={WhenStayInModal}
-        />
-      ) : null}
-      <button
-        onClick={ClickToInModalEstimate}
-        className="md:float-right custom-03"
-      >
-        สร้างเอกสารใหม่
-      </button>
-    </>
   )
 }

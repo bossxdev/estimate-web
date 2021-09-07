@@ -17,7 +17,7 @@ const initialState = {
   G: null,
   GSlope: null,
   unit: 'mm',
-  layout: false,
+  layout: true,
 }
 
 export default function Boxes(state = initialState, action) {

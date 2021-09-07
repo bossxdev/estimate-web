@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
-import { HTTP_STATUS_CODE } from '../../src/utils/constants'
+import { HTTP_STATUS_CODE } from '../../src/utils/Constants'
 
 const getData = axios.create({
   baseURL: process.env.NEXT_PUBLIC_ESTIMATE,

@@ -1,6 +1,6 @@
-import getData from '../../../pages/api/estimate'
-import * as EndPoints from '../../../pages/api/endPoints'
-import { HTTP_STATUS_CODE, RESPONSE_MESSAGE } from '../../utils/constants'
+import getData from '../../../pages/api/Estimate'
+import * as EndPoints from '../../../pages/api/EndPoints'
+import { HTTP_STATUS_CODE, RESPONSE_MESSAGE } from '../../utils/Constants'
 import { message } from 'antd'
 
 const FETCH_PRODUCTS_LIST_REQUEST = 'Products/FETCH_PRODUCTS_LIST_REQUEST'
